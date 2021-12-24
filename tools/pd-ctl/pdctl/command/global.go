@@ -25,11 +25,17 @@ import (
 
 	"github.com/pingcap/errors"
 	"github.com/spf13/cobra"
+	"github.com/tikv/pd/pkg/apiutil"
 	"go.etcd.io/etcd/pkg/transport"
 )
 
 var (
-	dialClient = &http.Client{}
+	dialClient = &http.Client{
+		Transport: &apiutil.ComponentSignatureRoundTripper{
+			Component: "pdctl",
+			Proxied:   http.DefaultTransport,
+		},
+	}
 	pingPrefix = "pd/api/v1/ping"
 )
 
@@ -46,8 +52,10 @@ func InitHTTPSClient(caPath, certPath, keyPath string) error {
 	}
 
 	dialClient = &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: tlsConfig,
+		Transport: &apiutil.ComponentSignatureRoundTripper{
+			Component: "pdctl",
+			Proxied: &http.Transport{
+				TLSClientConfig: tlsConfig},
 		},
 	}
 

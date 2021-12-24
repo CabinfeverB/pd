@@ -16,8 +16,10 @@ package server
 
 import (
 	"net/http"
+	"sync"
 
 	"github.com/tikv/pd/pkg/apiutil"
+	"golang.org/x/time/rate"
 )
 
 // SelfProtectionManager is a framework to handle self protection mechanism
@@ -75,6 +77,62 @@ func (h *HTTPServiceSelfProtectionManager) Handle() bool {
 
 // serviceSelfProtectionHandler is a handler which is independent communication mode
 type serviceSelfProtectionHandler struct {
-	// todo APIRateLimiter
+	apiRateLimiter *APIRateLimiter
 	// todo AuditLogger
+}
+
+func (h *serviceSelfProtectionHandler) Handle(componentName string) bool {
+	limitAllow := h.rateLimitAllow(componentName)
+	// it will include other self-protection actions
+	return limitAllow
+}
+
+// RateLimitAllow is used to check whether the rate limit allow request process
+func (h *serviceSelfProtectionHandler) rateLimitAllow(componentName string) bool {
+	if h.apiRateLimiter == nil {
+		return true
+	}
+	return h.apiRateLimiter.Allow(componentName)
+}
+
+// APIRateLimiter is used to limit unnecessary and excess request
+// Currently support QPS rate limit by compoenent
+// It depends on the rate.Limiter which implement a token-bucket algorithm
+type APIRateLimiter struct {
+	mu sync.RWMutex
+
+	enableQPSLimit bool
+
+	totalQPSRateLimiter *rate.Limiter
+
+	enableComponentQPSLimit bool
+	componentQPSRateLimiter map[string]*rate.Limiter
+}
+
+// QPSAllow firstly check component token bucket and then check total token bucket
+// if component rate limiter doesn't allow, it won't ask total limiter
+func (rl *APIRateLimiter) QPSAllow(componentName string) bool {
+	if !rl.enableQPSLimit {
+		return true
+	}
+	isComponentQPSLimit := true
+	if rl.enableComponentQPSLimit {
+		componentRateLimiter, ok := rl.componentQPSRateLimiter[componentName]
+		// The current strategy is to ignore the component limit if it is not found
+		if ok {
+			isComponentQPSLimit = componentRateLimiter.Allow()
+		}
+	}
+	if !isComponentQPSLimit {
+		return isComponentQPSLimit
+	}
+	isTotalQPSLimit := rl.totalQPSRateLimiter.Allow()
+	return isTotalQPSLimit
+}
+
+// Allow currentlt only supports QPS rate limit
+func (rl *APIRateLimiter) Allow(componentName string) bool {
+	rl.mu.RLock()
+	defer rl.mu.RUnlock()
+	return rl.QPSAllow(componentName)
 }
