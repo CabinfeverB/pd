@@ -425,7 +425,7 @@ func (h *schedulerHandler) DiagnoseSchedulerByStore(w http.ResponseWriter, r *ht
 	}
 	switch name {
 	case schedulers.BalanceRegionName:
-		if h.IsExistBalanceRegionSchedulerDiagnosis() {
+		if !h.IsExistBalanceRegionSchedulerDiagnosis() {
 			if err := h.AddBalanceRegionSchedulerDiagnosis(); err != nil {
 				h.r.JSON(w, http.StatusInternalServerError, err.Error())
 				return

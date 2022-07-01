@@ -71,6 +71,9 @@ func (d *diagnosisManager) GetSchedulerDiagnosisResult(name string) *diagnosis.M
 }
 
 func (d *diagnosisManager) GetSchedulerStoreDiagnosisResult(name string, store uint64) *diagnosis.StepDiagnosisResult {
+	if scheduler, ok := d.schedulers[name]; ok {
+		return scheduler.GetSchedulerStoreDiagnosisResult(store)
+	}
 	return nil
 }
 
