@@ -892,7 +892,11 @@ func (s *scheduleController) Schedule(dryrun bool) (ops []*operator.Operator, pl
 		}
 		cacheCluster := newCacheCluster(s.cluster)
 		// If we have schedule, reset interval to the minimal interval.
+<<<<<<< HEAD
 		if ops, plans = s.Scheduler.Schedule(cacheCluster, dryrun); len(ops) > 0 {
+=======
+		if ops, _ := s.Scheduler.Schedule(cacheCluster, false); len(ops) > 0 {
+>>>>>>> rleungx/change-schedule-interface
 			s.nextInterval = s.Scheduler.GetMinInterval()
 			return ops, plans
 		}

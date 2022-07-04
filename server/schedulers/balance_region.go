@@ -27,6 +27,7 @@ import (
 	"github.com/tikv/pd/server/schedule/diagnosis"
 	"github.com/tikv/pd/server/schedule/filter"
 	"github.com/tikv/pd/server/schedule/operator"
+	"github.com/tikv/pd/server/schedule/plan"
 	"github.com/tikv/pd/server/storage/endpoint"
 	"go.uber.org/zap"
 )
@@ -138,7 +139,7 @@ func (s *balanceRegionScheduler) IsScheduleAllowed(cluster schedule.Cluster) boo
 	return allowed
 }
 
-func (s *balanceRegionScheduler) Schedule(cluster schedule.Cluster, dryRun bool) ([]*operator.Operator, []schedule.Plan) {
+func (s *balanceRegionScheduler) Schedule(cluster schedule.Cluster, dryRun bool) ([]*operator.Operator, []plan.Plan) {
 	if dryRun {
 		log.Info("Pebug begin balanceRegionScheduler")
 	}
@@ -157,10 +158,10 @@ func (s *balanceRegionScheduler) Schedule(cluster schedule.Cluster, dryRun bool)
 	opInfluence := s.opController.GetOpInfluence(cluster)
 	s.OpController.GetFastOpInfluence(cluster, opInfluence)
 	kind := core.NewScheduleKind(core.RegionKind, core.BySize)
-	plan := newBalancePlan(kind, cluster, opInfluence)
+	scheduleplan := newBalancePlan(kind, cluster, opInfluence)
 	sort.Slice(stores, func(i, j int) bool {
-		iOp := plan.GetOpInfluence(stores[i].GetID())
-		jOp := plan.GetOpInfluence(stores[j].GetID())
+		iOp := scheduleplan.GetOpInfluence(stores[i].GetID())
+		jOp := scheduleplan.GetOpInfluence(stores[j].GetID())
 		return stores[i].RegionScore(opts.GetRegionScoreFormulaVersion(), opts.GetHighSpaceRatio(), opts.GetLowSpaceRatio(), iOp) >
 			stores[j].RegionScore(opts.GetRegionScoreFormulaVersion(), opts.GetHighSpaceRatio(), opts.GetLowSpaceRatio(), jOp)
 	})
@@ -182,54 +183,54 @@ func (s *balanceRegionScheduler) Schedule(cluster schedule.Cluster, dryRun bool)
 	dc.NextStep()
 	dc.Debug()
 	// ** step = 1
-	for _, plan.source = range stores {
-		dc.SetSelectedObject(plan.SourceStoreID())
-		retryLimit := s.retryQuota.GetLimit(plan.source)
+	for _, scheduleplan.source = range stores {
+		dc.SetSelectedObject(scheduleplan.SourceStoreID())
+		retryLimit := s.retryQuota.GetLimit(scheduleplan.source)
 		for i := 0; i < retryLimit; i++ {
 			schedulerCounter.WithLabelValues(s.GetName(), "total").Inc()
 			// Priority pick the region that has a pending peer.
 			// Pending region may means the disk is overload, remove the pending region firstly.
-			plan.region = filter.SelectOneRegionWithDiagnosis(cluster.RandPendingRegions(plan.SourceStoreID(), s.conf.Ranges), dc,
+			scheduleplan.region = filter.SelectOneRegionWithDiagnosis(cluster.RandPendingRegions(scheduleplan.SourceStoreID(), s.conf.Ranges), dc,
 				downFilter, replicaFilter, allowBalanceEmptyRegion, hotFilter, leaderFilter)
-			if plan.region == nil {
+			if scheduleplan.region == nil {
 				// Then pick the region that has a follower in the source store.
-				plan.region = filter.SelectOneRegionWithDiagnosis(cluster.RandFollowerRegions(plan.SourceStoreID(), s.conf.Ranges), dc,
+				scheduleplan.region = filter.SelectOneRegionWithDiagnosis(cluster.RandFollowerRegions(scheduleplan.SourceStoreID(), s.conf.Ranges), dc,
 					pendingFilter, downFilter, replicaFilter, allowBalanceEmptyRegion, hotFilter, leaderFilter)
 			}
-			if plan.region == nil {
+			if scheduleplan.region == nil {
 				// Then pick the region has the leader in the source store.
-				plan.region = filter.SelectOneRegionWithDiagnosis(cluster.RandLeaderRegions(plan.SourceStoreID(), s.conf.Ranges), dc,
+				scheduleplan.region = filter.SelectOneRegionWithDiagnosis(cluster.RandLeaderRegions(scheduleplan.SourceStoreID(), s.conf.Ranges), dc,
 					pendingFilter, downFilter, replicaFilter, allowBalanceEmptyRegion, hotFilter, leaderFilter)
 			}
-			if plan.region == nil {
+			if scheduleplan.region == nil {
 				// Finally pick learner.
-				plan.region = filter.SelectOneRegionWithDiagnosis(cluster.RandLearnerRegions(plan.SourceStoreID(), s.conf.Ranges), dc,
+				scheduleplan.region = filter.SelectOneRegionWithDiagnosis(cluster.RandLearnerRegions(scheduleplan.SourceStoreID(), s.conf.Ranges), dc,
 					pendingFilter, downFilter, replicaFilter, allowBalanceEmptyRegion, hotFilter, leaderFilter)
 			}
-			if plan.region == nil {
+			if scheduleplan.region == nil {
 				schedulerCounter.WithLabelValues(s.GetName(), "no-region").Inc()
 				continue
 			}
 			dc.Debug()
-			log.Debug("select region", zap.String("scheduler", s.GetName()), zap.Uint64("region-id", plan.region.GetID()))
+			log.Debug("select region", zap.String("scheduler", s.GetName()), zap.Uint64("region-id", scheduleplan.region.GetID()))
 			dc.NextStep()
 			// ** step = 2
-			dc.SetSelectedObject(plan.region.GetID())
-			if op := s.transferPeer(plan, dc); op != nil {
-				s.retryQuota.ResetLimit(plan.source)
+			dc.SetSelectedObject(scheduleplan.region.GetID())
+			if op := s.transferPeer(scheduleplan, dc); op != nil {
+				s.retryQuota.ResetLimit(scheduleplan.source)
 				op.Counters = append(op.Counters, schedulerCounter.WithLabelValues(s.GetName(), "new-operator"))
 				return []*operator.Operator{op}, nil
 			}
 			// ** step = 1
 			dc.LastStep()
 		}
-		s.retryQuota.Attenuate(plan.source)
+		s.retryQuota.Attenuate(scheduleplan.source)
 	}
 	s.retryQuota.GC(stores)
 	if dryRun {
 		log.Info("diagnose controller plans length", zap.Int("plans length", len(dc.GetPlans())))
 	}
-	plans := make([]schedule.Plan, 0)
+	plans := make([]plan.Plan, 0)
 	for _, item := range dc.GetPlans() {
 		plans = append(plans, item)
 	}
