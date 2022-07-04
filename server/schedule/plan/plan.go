@@ -14,6 +14,18 @@
 
 package plan
 
+import "github.com/tikv/pd/server/schedule/diagnosis"
+
 // Plan is the basic unit for both scheduling and diagnosis.
 // TODO: for each scheduler/checker, we can have an individual definition but need to implement the common interfaces.
 type Plan interface{}
+
+type DiagnosePlan interface {
+	GetSourceStore() uint64
+	GetRegion() uint64
+	GetTargetStore() uint64
+	GetStep() diagnosis.ScheduleStep
+	GetReason() string
+	IsSchedulable() bool
+	GetFailObject() uint64
+}
