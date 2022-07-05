@@ -152,7 +152,6 @@ func TestStoreStateFilter(t *testing.T) {
 	}
 
 	check := func(store *core.StoreInfo, testCases []testCase) {
-<<<<<<< HEAD
 		for _, tc := range testCases {
 			sourceResult, targetResult := true, true
 			for _, filter := range filters[tc.filterIdx] {
@@ -161,11 +160,6 @@ func TestStoreStateFilter(t *testing.T) {
 			}
 			re.Equal(sourceResult, tc.sourceRes)
 			re.Equal(targetResult, tc.targetRes)
-=======
-		for _, testCase := range testCases {
-			re.Equal(testCase.sourceRes, filters[testCase.filterIdx].Source(opt, store))
-			re.Equal(testCase.targetRes, filters[testCase.filterIdx].Target(opt, store))
->>>>>>> rleungx/change-schedule-interface
 		}
 	}
 
