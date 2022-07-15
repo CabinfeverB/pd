@@ -30,6 +30,7 @@ type Plan interface {
 	SetStatus(status Status)
 	GetStatus() Status
 	IsSchedulable() bool
+	SetSchedulable(bool)
 	Step() int
 	Clone(...PlanOption) Plan
 }

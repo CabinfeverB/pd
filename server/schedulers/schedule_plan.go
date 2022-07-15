@@ -73,6 +73,10 @@ func (p *balanceSchedulerBasePlan) IsSchedulable() bool {
 	return p.isSchedulable
 }
 
+func (p *balanceSchedulerBasePlan) SetSchedulable(schedulable bool) {
+	p.isSchedulable = schedulable
+}
+
 func (p *balanceSchedulerBasePlan) Clone(opts ...plan.PlanOption) plan.Plan {
 	plan := &balanceSchedulerBasePlan{
 		region:        p.region,

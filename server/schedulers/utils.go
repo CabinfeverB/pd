@@ -47,6 +47,8 @@ type solver struct {
 
 	sourceScore float64
 	targetScore float64
+
+	ops []*operator.Operator
 }
 
 func newSolver(basePlan *balanceSchedulerBasePlan, kind core.ScheduleKind, cluster schedule.Cluster, opInfluence operator.OpInfluence) *solver {
@@ -58,6 +60,16 @@ func newSolver(basePlan *balanceSchedulerBasePlan, kind core.ScheduleKind, clust
 		tolerantSizeRatio:        adjustTolerantRatio(cluster, kind),
 	}
 }
+
+// func (s *tc) searchPlan(plan plan.Plan, index int) {
+// 	if index == maxI {
+
+// 	}
+// 	search := ss[index].Search(s.solver)
+// 	for p := search(plan); p != nil; p = search(plan) {
+// 		s.re(p, index+1)
+// 	}
+// }
 
 func (p *solver) GetOpInfluence(storeID uint64) int64 {
 	return p.opInfluence.GetStoreInfluence(storeID).ResourceProperty(p.kind)
