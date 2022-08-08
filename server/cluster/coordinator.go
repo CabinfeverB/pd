@@ -37,6 +37,7 @@ import (
 	"github.com/tikv/pd/server/schedule/hbstream"
 	"github.com/tikv/pd/server/schedule/operator"
 	"github.com/tikv/pd/server/schedule/plan"
+	"github.com/tikv/pd/server/schedulers"
 	"github.com/tikv/pd/server/statistics"
 	"github.com/tikv/pd/server/storage"
 	"go.uber.org/zap"
@@ -95,6 +96,13 @@ func newCoordinator(ctx context.Context, cluster *RaftCluster, hbStreams *hbstre
 		pluginInterface: schedule.NewPluginInterface(),
 		diagnosis:       newDiagnosisManager(cluster, schedulers),
 	}
+}
+
+func (c *coordinator) DiagnoseDryRun() (uint64, int, int) {
+	c.diagnosis.diagnosisDryRun(schedulers.BalanceRegionName)
+	items := c.diagnosis.dryRunResult[schedulers.BalanceRegionName].Elems()
+	item := items[len(items)-1]
+	return item.Key, len(item.Value.(*diagnosisResult).unschedulablePlans), len(item.Value.(*diagnosisResult).schedulablePlans)
 }
 
 func (c *coordinator) GetWaitingRegions() []*cache.Item {
@@ -991,8 +999,8 @@ func newDiagnosisResult(ops []*operator.Operator, result []plan.Plan) *diagnosis
 	}
 	return &diagnosisResult{
 		timestamp:          uint64(time.Now().Unix()),
-		unschedulablePlans: result[index:],
-		schedulablePlans:   result[:index],
+		schedulablePlans:   result[index:],
+		unschedulablePlans: result[:index],
 	}
 }
 
