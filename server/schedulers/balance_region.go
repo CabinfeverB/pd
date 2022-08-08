@@ -220,7 +220,6 @@ func (s *balanceRegionScheduler) Schedule(cluster schedule.Cluster, dryRun bool)
 		s.retryQuota.Attenuate(solver.source)
 	}
 	s.retryQuota.GC(stores)
-	log.Info("balance region debug", zap.Int("collector.GetPlans()", len(collector.GetPlans())))
 	return nil, collector.GetPlans()
 }
 

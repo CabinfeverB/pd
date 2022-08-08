@@ -19,8 +19,10 @@ import (
 	"strconv"
 
 	"github.com/pingcap/kvproto/pkg/metapb"
+	"github.com/pingcap/log"
 	"github.com/tikv/pd/server/core"
 	"github.com/tikv/pd/server/schedule/plan"
+	"go.uber.org/zap"
 )
 
 type balanceStep int
@@ -184,5 +186,8 @@ func (p *balanceSchedulerBasePlan) Clone(opts ...plan.Option) plan.Plan {
 	for _, opt := range opts {
 		opt(plan)
 	}
+	log.Info("plan desc", zap.Uint64("source", plan.source.GetID()),
+		zap.Uint64("region", plan.region.GetID()),
+		zap.Uint64("target", plan.target.GetID()), zap.String("status", plan.status.String()))
 	return plan
 }

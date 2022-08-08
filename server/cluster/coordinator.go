@@ -999,8 +999,8 @@ func newDiagnosisResult(ops []*operator.Operator, result []plan.Plan) *diagnosis
 	}
 	return &diagnosisResult{
 		timestamp:          uint64(time.Now().Unix()),
-		schedulablePlans:   result[index:],
-		unschedulablePlans: result[:index],
+		unschedulablePlans: result[index:],
+		schedulablePlans:   result[:index],
 	}
 }
 
