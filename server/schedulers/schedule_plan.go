@@ -186,8 +186,6 @@ func (p *balanceSchedulerBasePlan) Clone(opts ...plan.Option) plan.Plan {
 	for _, opt := range opts {
 		opt(plan)
 	}
-	log.Info("plan desc", zap.Uint64("source", plan.source.GetID()),
-		zap.Uint64("region", plan.region.GetID()),
-		zap.Uint64("target", plan.target.GetID()), zap.String("status", plan.status.String()))
+	log.Info("plan desc", zap.String("desc", plan.Desc()))
 	return plan
 }
