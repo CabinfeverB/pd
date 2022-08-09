@@ -217,7 +217,7 @@ func (s *balanceRegionScheduler) Schedule(cluster schedule.Cluster, dryRun bool)
 			}
 			basePlan.step.Sub()
 		}
-		//s.retryQuota.Attenuate(solver.source)
+		s.retryQuota.Attenuate(solver.source)
 	}
 	s.retryQuota.GC(stores)
 	return nil, collector.GetPlans()

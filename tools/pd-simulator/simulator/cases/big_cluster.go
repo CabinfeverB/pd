@@ -31,7 +31,7 @@ func newBigCluster() *Case {
 	storeNum := simutil.CaseConfigure.StoreNum
 	regionNum := simutil.CaseConfigure.RegionNum * storeNum / 3
 	if storeNum == 0 || regionNum == 0 {
-		storeNum, regionNum = 120, 80000
+		storeNum, regionNum = 1008, 672000
 	}
 
 	for i := 0; i < storeNum; i++ {
@@ -40,7 +40,7 @@ func newBigCluster() *Case {
 				ID:        IDAllocator.nextID(),
 				Status:    metapb.StoreState_Up,
 				Capacity:  1 * units.TiB,
-				Available: 900 * units.GiB,
+				Available: 950 * units.GiB,
 				Version:   "2.1.0",
 			})
 		} else {
