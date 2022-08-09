@@ -40,7 +40,79 @@ func newBigCluster() *Case {
 				ID:        IDAllocator.nextID(),
 				Status:    metapb.StoreState_Up,
 				Capacity:  1 * units.TiB,
-				Available: 950 * units.GiB,
+				Available: 1000 * units.GiB,
+				Version:   "2.1.0",
+			})
+		} else {
+			simCase.Stores = append(simCase.Stores, &Store{
+				ID:        IDAllocator.nextID(),
+				Status:    metapb.StoreState_Up,
+				Capacity:  1 * units.TiB,
+				Available: 1 * units.TiB,
+				Version:   "2.1.0",
+			})
+		}
+	}
+
+	for i := 0; i < regionNum; i++ {
+		peers := []*metapb.Peer{
+			{Id: IDAllocator.nextID(), StoreId: uint64(i%storeNum + 1)},
+			{Id: IDAllocator.nextID(), StoreId: uint64((i+1)%storeNum + 1)},
+			{Id: IDAllocator.nextID(), StoreId: uint64((i+2)%storeNum + 1)},
+		}
+		simCase.Regions = append(simCase.Regions, Region{
+			ID:     IDAllocator.nextID(),
+			Peers:  peers,
+			Leader: peers[0],
+			Size:   96 * units.MiB,
+			Keys:   960000,
+		})
+	}
+
+	storesLastUpdateTime := make([]int64, storeNum+1)
+	storeLastAvailable := make([]uint64, storeNum+1)
+	simCase.Checker = func(regions *core.RegionsInfo, stats []info.StoreStats) bool {
+		res := true
+		curTime := time.Now().Unix()
+		storesAvailable := make([]uint64, 0, storeNum+1)
+		for i := 1; i <= storeNum; i++ {
+			available := stats[i].GetAvailable()
+			storesAvailable = append(storesAvailable, available)
+			if curTime-storesLastUpdateTime[i] > 60 {
+				if storeLastAvailable[i] != available {
+					res = false
+				}
+				if stats[i].ToCompactionSize != 0 {
+					res = false
+				}
+				storesLastUpdateTime[i] = curTime
+				storeLastAvailable[i] = available
+			} else {
+				res = false
+			}
+		}
+		simutil.Logger.Info("current counts", zap.Uint64s("storesAvailable", storesAvailable))
+		return res
+	}
+	return &simCase
+}
+
+func newMiddleCluster() *Case {
+	var simCase Case
+
+	storeNum := simutil.CaseConfigure.StoreNum
+	regionNum := simutil.CaseConfigure.RegionNum * storeNum / 3
+	if storeNum == 0 || regionNum == 0 {
+		storeNum, regionNum = 120, 8000
+	}
+
+	for i := 0; i < storeNum; i++ {
+		if i%2 == 1 {
+			simCase.Stores = append(simCase.Stores, &Store{
+				ID:        IDAllocator.nextID(),
+				Status:    metapb.StoreState_Up,
+				Capacity:  1 * units.TiB,
+				Available: 1000 * units.GiB,
 				Version:   "2.1.0",
 			})
 		} else {

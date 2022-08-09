@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/pingcap/kvproto/pkg/metapb"
 	"github.com/pingcap/log"
 	"github.com/tikv/pd/server/core"
 	"github.com/tikv/pd/server/schedule/plan"
@@ -76,14 +75,14 @@ func (p *balanceSchedulerBasePlan) GetStep() plan.Step {
 	return p.step
 }
 
-func (p *balanceSchedulerBasePlan) GenerateCoreResource(id uint64) {
+func (p *balanceSchedulerBasePlan) GenerateCoreResource(resource interface{}) {
 	switch *p.step {
 	case 0:
-		p.source = core.NewStoreInfo(&metapb.Store{Id: id})
+		p.source = resource.(*core.StoreInfo)
 	case 1:
-		p.region = core.NewRegionInfo(&metapb.Region{Id: id}, nil)
+		p.region = resource.(*core.RegionInfo)
 	case 2:
-		p.target = core.NewStoreInfo(&metapb.Store{Id: id})
+		p.target = resource.(*core.StoreInfo)
 	}
 }
 
