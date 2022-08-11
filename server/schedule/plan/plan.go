@@ -17,7 +17,6 @@ package plan
 // Plan is the basic unit for both scheduling and diagnosis.
 // TODO: for each scheduler/checker, we can have an individual definition but need to implement the common interfaces.
 type Plan interface {
-	GetPhases() []map[string]string
 	GetStep() Step
 	GetStatus() Status
 	GetCoreResource(step Step) *CoreResource
@@ -25,6 +24,10 @@ type Plan interface {
 	Clone(ops ...Option) Plan // generate plan for clone option
 	GenerateCoreResource(interface{})
 	SetStatus(Status)
+}
+
+type Analyzer interface {
+	Summary(interface{}) (string, error)
 }
 
 type Step interface {

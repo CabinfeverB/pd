@@ -138,7 +138,7 @@ func (s *balanceRegionScheduler) IsScheduleAllowed(cluster schedule.Cluster) boo
 }
 
 func (s *balanceRegionScheduler) Schedule(cluster schedule.Cluster, dryRun bool) ([]*operator.Operator, []plan.Plan) {
-	basePlan := NewBalanceSchedulerBasePlan()
+	basePlan := NewBalanceSchedulerPlan()
 	collector := plan.NewCollector(dryRun, basePlan)
 
 	schedulerCounter.WithLabelValues(s.GetName(), "schedule").Inc()
@@ -248,7 +248,7 @@ func (s *balanceRegionScheduler) transferPeer(solver *solver, collector *plan.Co
 
 		if !solver.shouldBalance(s.GetName()) {
 			schedulerCounter.WithLabelValues(s.GetName(), "skip").Inc()
-			collector.Collect(plan.SetStatus(plan.NewStatus(plan.StatusNoNeed)))
+			collector.Collect(plan.SetStatus(plan.NewStatus(plan.StatusScoreAlmostSame)))
 			continue
 		}
 
@@ -258,7 +258,7 @@ func (s *balanceRegionScheduler) transferPeer(solver *solver, collector *plan.Co
 		op, err := operator.CreateMovePeerOperator(BalanceRegionType, solver, solver.region, operator.OpRegion, oldPeer.GetStoreId(), newPeer)
 		if err != nil {
 			schedulerCounter.WithLabelValues(s.GetName(), "create-operator-fail").Inc()
-			collector.Collect(plan.SetStatus(plan.NewStatus(plan.StatusNoOperator, err.Error())))
+			collector.Collect(plan.SetStatus(plan.NewStatus(plan.StatusScoreAlmostSame)))
 			return nil
 		}
 		collector.Collect()
