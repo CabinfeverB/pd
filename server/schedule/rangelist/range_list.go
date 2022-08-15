@@ -16,6 +16,8 @@ package rangelist
 
 import (
 	"bytes"
+	"encoding/hex"
+	"fmt"
 	"sort"
 )
 
@@ -54,12 +56,18 @@ func (l List) GetDataByKey(key []byte) (index int, data []interface{}) {
 
 // GetData returns position and items by key range.
 func (l List) GetData(start, end []byte) (index int, data []interface{}) {
+	for i, seg := range l.segments {
+		fmt.Printf("%v %v %v\n", i, hex.EncodeToString(seg.startKey), seg.data)
+	}
 	i := sort.Search(len(l.segments), func(i int) bool {
+		fmt.Println(i, hex.EncodeToString(l.segments[i].startKey), hex.EncodeToString(start))
 		return bytes.Compare(l.segments[i].startKey, start) > 0
 	})
+	fmt.Printf("########\n%d %v %v %v %v\n########\n", i, i == 0, i != len(l.segments), len(end) == 0, bytes.Compare(end, l.segments[i].startKey) > 0)
 	if i == 0 || i != len(l.segments) && (len(end) == 0 || bytes.Compare(end, l.segments[i].startKey) > 0) {
 		return -1, nil
 	}
+	fmt.Printf("########\nfalse\n########\n")
 	return i - 1, l.segments[i-1].data
 }
 

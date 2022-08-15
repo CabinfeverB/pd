@@ -20,6 +20,7 @@ import (
 
 	"github.com/pingcap/errors"
 	"github.com/pingcap/kvproto/pkg/metapb"
+	"github.com/pingcap/log"
 	"github.com/tikv/pd/pkg/typeutil"
 	"github.com/tikv/pd/server/config"
 	"github.com/tikv/pd/server/core"
@@ -138,6 +139,8 @@ func NewBuilder(desc string, ci ClusterInformer, region *core.RegionInfo, opts .
 	var rules []*placement.Rule
 	if err == nil && b.GetOpts().IsPlacementRulesEnabled() {
 		fit := b.GetRuleManager().FitRegion(b.GetBasicCluster(), region)
+		log.Info(fmt.Sprintf("%+v", fit))
+		fmt.Printf("%+v\n", fit)
 		for _, rf := range fit.RuleFits {
 			rules = append(rules, rf.Rule)
 		}

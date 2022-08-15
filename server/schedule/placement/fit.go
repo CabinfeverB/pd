@@ -15,6 +15,7 @@
 package placement
 
 import (
+	"fmt"
 	"math"
 	"math/bits"
 	"sort"
@@ -249,6 +250,7 @@ func (w *fitWorker) fixRuleWithCandidates(candidates []*fitPeer, index int, coun
 		}
 		selected := pickPeersFromBinaryInt(candidates, binaryInt)
 		better = w.compareBest(selected, index) || better
+		fmt.Printf("********* index:%d candidates:%v selected:%v better:%v rule:%v\n", index, candidates, selected, better, w.rules[index])
 		// reset the selected items to false.
 		unSelectPeers(selected)
 		if w.exit {

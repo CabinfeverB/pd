@@ -126,6 +126,8 @@ func (rl ruleList) getRulesByKey(key []byte) []*Rule {
 
 func (rl ruleList) getRulesForApplyRange(start, end []byte) []*Rule {
 	i, data := rl.rangeList.GetData(start, end)
+	fmt.Printf("\n@@@@@@@@@@@@@@@@\nstartKey:%v(hex:%v) endKey:%v(hex:%v) i:%v data:%v\n@@@@@@@@@@@@@@@@\n", string(start), hex.EncodeToString(start), string(end), hex.EncodeToString(end),
+		i, data)
 	if i < 0 || len(data) == 0 {
 		return nil
 	}

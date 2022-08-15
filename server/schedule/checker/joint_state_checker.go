@@ -48,7 +48,7 @@ func (c *JointStateChecker) Check(region *core.RegionInfo) *operator.Operator {
 	op, err := operator.CreateLeaveJointStateOperator(operator.OpDescLeaveJointState, c.cluster, region)
 	if err != nil {
 		checkerCounter.WithLabelValues("joint_state_checker", "create-operator-fail").Inc()
-		log.Debug("fail to create leave joint state operator", errs.ZapError(err))
+		log.Info("fail to create leave joint state operator", errs.ZapError(err))
 		return nil
 	} else if op != nil {
 		checkerCounter.WithLabelValues("joint_state_checker", "new-operator").Inc()
