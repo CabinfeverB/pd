@@ -170,6 +170,54 @@ func TestBeforeSpiltLeaveJointState(t *testing.T) {
 		checkSteps(re, op, testCase.OpSteps)
 	}
 }
+func TestBeforeSpiltLeaveJointState2(t *testing.T) {
+	re := require.New(t)
+	cfg := config.NewTestOptions()
+	cfg.GetReplicationConfig().MaxReplicas = 1
+	cfg.GetReplicationConfig().EnablePlacementRules = true
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	cluster := mockcluster.NewCluster(ctx, cfg)
+	ruleManager := cluster.RuleManager
+	ruleManager.SetRule(&placement.Rule{
+		GroupID:     "tiflash",
+		ID:          "tiflash-1",
+		StartKeyHex: hex.EncodeToString([]byte("7480000000000025ff605f720000000000fa")),
+		EndKeyHex:   hex.EncodeToString([]byte("7480000000000025ff6100000000000000f8")),
+		Role:        placement.Learner,
+		Count:       1,
+	})
+
+	jsc := NewJointStateChecker(cluster)
+	for id := uint64(1); id <= 10; id++ {
+		cluster.PutStoreWithLabels(id)
+	}
+	type testCase struct {
+		Peers   []*metapb.Peer // first is leader
+		OpSteps []operator.OpStep
+	}
+	testCases := []testCase{
+		{
+			[]*metapb.Peer{
+				{Id: 102, StoreId: 2, Role: metapb.PeerRole_DemotingVoter},
+				{Id: 103, StoreId: 3, Role: metapb.PeerRole_IncomingVoter},
+			},
+			[]operator.OpStep{
+				operator.TransferLeader{FromStore: 2, ToStore: 3},
+				operator.ChangePeerV2Leave{
+					PromoteLearners: []operator.PromoteLearner{{ToStore: 3}},
+					DemoteVoters:    []operator.DemoteVoter{{ToStore: 2}},
+				},
+			},
+		},
+	}
+	for _, testCase := range testCases {
+		region := core.NewRegionInfo(&metapb.Region{Id: 1, Peers: testCase.Peers}, testCase.Peers[0],
+			core.WithStartKey([]byte("7480000000000025FF6000000000000000F8")), core.WithEndKey([]byte("7480000000000025FF6500000000000000F8")))
+		op := jsc.Check(region)
+		checkSteps(re, op, testCase.OpSteps)
+	}
+}
 
 func checkSteps(re *require.Assertions, op *operator.Operator, steps []operator.OpStep) {
 	if len(steps) == 0 {
