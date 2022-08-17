@@ -18,6 +18,62 @@ package plan
 // TODO: for each scheduler/checker, we can have an individual definition but need to implement the common interfaces.
 type Plan interface {
 	GetStep() int
-	GetResourceID() uint64
-	GetStatus() Status
+	GetStatus() *Status
+	GetCoreResource(int) uint64
+
+	Clone(ops ...Option) Plan // generate plan for clone option
+	SetResource(interface{})
+	SetStatus(*Status)
+}
+
+type Analyzer interface {
+	Summary(interface{}) (string, error)
+}
+
+// Collector is a plan collector
+type Collector struct {
+	basePlan           Plan
+	unschedulablePlans []Plan
+	schedulablePlans   []Plan
+}
+
+// NewCollector returns a new Collector
+func NewCollector(plan Plan) *Collector {
+	return &Collector{
+		basePlan:           plan,
+		unschedulablePlans: make([]Plan, 0),
+		schedulablePlans:   make([]Plan, 0),
+	}
+}
+
+// Collect is used to collect a new Plan and save it into PlanCollector
+func (c *Collector) Collect(opts ...Option) {
+	plan := c.basePlan.Clone(opts...)
+	if plan.GetStatus().IsOK() {
+		c.schedulablePlans = append(c.schedulablePlans, plan)
+	} else {
+		c.unschedulablePlans = append(c.unschedulablePlans, plan)
+	}
+}
+
+// GetPlans returns all plans and the first part plans are schedulable
+func (c *Collector) GetPlans() []Plan {
+	return append(c.schedulablePlans, c.unschedulablePlans...)
+}
+
+// Option is to do some action for plan
+type Option func(plan Plan)
+
+// SetStatus is used to set status for plan
+func SetStatus(status *Status) Option {
+	return func(plan Plan) {
+		plan.SetStatus(status)
+	}
+}
+
+// SetResource is used to generate Resource for plan
+func SetResource(resource interface{}) Option {
+	return func(plan Plan) {
+		plan.SetResource(resource)
+	}
 }

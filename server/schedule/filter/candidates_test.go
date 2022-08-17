@@ -54,24 +54,25 @@ func (f idFilter) Source(opt *config.PersistOptions, store *core.StoreInfo) *pla
 	if f(store.GetID()) {
 		return statusOK
 	}
-	return statusNoNeed
+	// return any status as long as it's not statusOK
+	return statusStoreScoreDisallowed
 }
 
 func (f idFilter) Target(opt *config.PersistOptions, store *core.StoreInfo) *plan.Status {
 	if f(store.GetID()) {
 		return statusOK
 	}
-	return statusNoNeed
+	return statusStoreScoreDisallowed
 }
 
 func TestCandidates(t *testing.T) {
 	re := require.New(t)
 	cs := newTestCandidates(1, 2, 3, 4, 5)
-	cs.FilterSource(nil, idFilter(func(id uint64) bool { return id > 2 }))
+	cs.FilterSource(nil, nil, idFilter(func(id uint64) bool { return id > 2 }))
 	check(re, cs, 3, 4, 5)
-	cs.FilterTarget(nil, idFilter(func(id uint64) bool { return id%2 == 1 }))
+	cs.FilterTarget(nil, nil, idFilter(func(id uint64) bool { return id%2 == 1 }))
 	check(re, cs, 3, 5)
-	cs.FilterTarget(nil, idFilter(func(id uint64) bool { return id > 100 }))
+	cs.FilterTarget(nil, nil, idFilter(func(id uint64) bool { return id > 100 }))
 	check(re, cs)
 	store := cs.PickFirst()
 	re.Nil(store)
