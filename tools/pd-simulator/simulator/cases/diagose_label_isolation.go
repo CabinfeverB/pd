@@ -14,6 +14,8 @@ import (
 
 func newLabelNotMatch1() *Case {
 	var simCase Case
+	simCase.Labels = []string{"host"}
+
 	num1, num2 := 3, 1
 	storeNum, regionNum := num1+num2, 200
 	for i := 0; i < num1; i++ {
@@ -80,6 +82,7 @@ func newLabelNotMatch1() *Case {
 
 func newLabelIsolation1() *Case {
 	var simCase Case
+	simCase.Labels = []string{"host"}
 
 	num1, num2 := 2, 2
 	storeNum, regionNum := num1+num2, 300
@@ -151,6 +154,7 @@ func newLabelIsolation1() *Case {
 
 func newLabelIsolation2() *Case {
 	var simCase Case
+	simCase.Labels = []string{"dc", "zone", "host"}
 
 	storeNum, regionNum := 5, 200
 	for i := 0; i < storeNum; i++ {
