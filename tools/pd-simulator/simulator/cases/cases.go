@@ -16,7 +16,9 @@ package cases
 
 import (
 	"github.com/pingcap/kvproto/pkg/metapb"
+	"github.com/tikv/pd/pkg/typeutil"
 	"github.com/tikv/pd/server/core"
+	"github.com/tikv/pd/server/schedule/placement"
 	"github.com/tikv/pd/tools/pd-simulator/simulator/info"
 	"github.com/tikv/pd/tools/pd-simulator/simulator/simutil"
 )
@@ -55,6 +57,8 @@ type Case struct {
 	TableNumber     int
 
 	Checker CheckerFunc // To check the schedule is finished.
+	Rules   []*placement.Rule
+	Labels  typeutil.StringSlice
 }
 
 // IDAllocator is used to alloc unique ID.

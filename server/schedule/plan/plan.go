@@ -26,9 +26,7 @@ type Plan interface {
 	SetStatus(*Status)
 }
 
-type Analyzer interface {
-	Summary(interface{}) (string, error)
-}
+type Summary func([]Plan) (string, error)
 
 // Collector is a plan collector
 type Collector struct {

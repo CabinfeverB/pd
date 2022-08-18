@@ -15,8 +15,6 @@
 package cluster
 
 import (
-	"fmt"
-
 	"github.com/tikv/pd/pkg/cache"
 	"github.com/tikv/pd/pkg/errs"
 	"github.com/tikv/pd/server/schedule/operator"
@@ -40,13 +38,17 @@ type diagnosticManager struct {
 	cluster       *RaftCluster
 	schedulers    map[string]*scheduleController
 	dryRunResults map[string]*cache.FIFO
+	SummaryFuncs  map[string]plan.Summary
 }
 
 func newDiagnosticManager(cluster *RaftCluster, schedulerControllers map[string]*scheduleController) *diagnosticManager {
+	summaryFuncs := make(map[string]plan.Summary)
+	summaryFuncs[schedulers.BalanceRegionName] = schedulers.BalancePlanSummary
 	return &diagnosticManager{
 		cluster:       cluster,
 		schedulers:    schedulerControllers,
 		dryRunResults: make(map[string]*cache.FIFO),
+		SummaryFuncs:  summaryFuncs,
 	}
 }
 
@@ -86,34 +88,10 @@ func (d *diagnosticManager) analyze(name string, ops []*operator.Operator, plans
 			res.Status = scheduling
 			return res
 		}
-		counts := make(map[uint64]map[plan.Status]uint64)
-		for _, p := range plans {
-			if p.GetStep() != 3 {
-				continue
-			}
-			if _, ok := counts[p.GetResourceID()]; !ok {
-				counts[p.GetResourceID()] = make(map[plan.Status]uint64)
-			}
-			counts[p.GetResourceID()][p.GetStatus()] += 1
-		}
-		result := make(map[plan.Status]uint64)
-		for _, v := range counts {
-			maxCount := uint64(0)
-			var status plan.Status
-			for s, c := range v {
-				if s.Priority() > status.Priority() || (s.Priority() == status.Priority() && c > maxCount) {
-					maxCount = c
-					status = s
-				}
-			}
-			result[status] += 1
-		}
-		var resstr string
-		for k, v := range result {
-			resstr += fmt.Sprintf("%d stores are filtered by %s; ", v, k.String())
-		}
 		res.Status = pending
-		res.Summary = resstr
+		if summaryFunc, ok := d.SummaryFuncs[schedulers.BalanceRegionName]; ok {
+			res.Summary, _ = summaryFunc(plans)
+		}
 		return res
 	default:
 	}

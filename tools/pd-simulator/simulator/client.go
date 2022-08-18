@@ -15,7 +15,11 @@
 package simulator
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"strings"
 	"sync"
 	"time"
@@ -39,12 +43,15 @@ type Client interface {
 	PutStore(ctx context.Context, store *metapb.Store) error
 	StoreHeartbeat(ctx context.Context, stats *pdpb.StoreStats) error
 	RegionHeartbeat(ctx context.Context, region *core.RegionInfo) error
+	PutPDConfig(*PDConfig) error
+
 	Close()
 }
 
 const (
 	pdTimeout             = time.Second
 	maxInitClusterRetries = 100
+	httpPrefix            = "pd/api/v1"
 )
 
 var (
@@ -57,6 +64,7 @@ type client struct {
 	tag        string
 	clusterID  uint64
 	clientConn *grpc.ClientConn
+	httpClient *http.Client
 
 	reportRegionHeartbeatCh  chan *core.RegionInfo
 	receiveRegionHeartbeatCh chan *pdpb.RegionHeartbeatResponse
@@ -296,6 +304,45 @@ func (c *client) PutStore(ctx context.Context, store *metapb.Store) error {
 	if resp.Header.GetError() != nil {
 		simutil.Logger.Error("put store error", zap.Reflect("error", resp.Header.GetError()))
 		return nil
+	}
+	return nil
+}
+
+func (c *client) PutPDConfig(config *PDConfig) error {
+	if len(config.PlacementRules) > 0 {
+		path := fmt.Sprintf("%s/%s/config/rules/batch", c.url, httpPrefix)
+		content, _ := json.Marshal(config.PlacementRules)
+		req, err := http.NewRequest(http.MethodPost, path, bytes.NewBuffer(content))
+		req.Header.Add("Content-Type", "application/json")
+		if err != nil {
+			return err
+		}
+		res, err := c.httpClient.Do(req)
+		if err != nil {
+			return err
+		}
+		defer res.Body.Close()
+		simutil.Logger.Info("add placement rule success", zap.String("rules", string(content)))
+	}
+	if len(config.LocationLabels) > 0 {
+		path := fmt.Sprintf("%s/%s/config", c.url, httpPrefix)
+		data := make(map[string]interface{})
+		data["location-labels"] = config.LocationLabels
+		content, err := json.Marshal(data)
+		if err != nil {
+			return err
+		}
+		req, err := http.NewRequest(http.MethodPost, path, bytes.NewBuffer(content))
+		req.Header.Add("Content-Type", "application/json")
+		if err != nil {
+			return err
+		}
+		res, err := c.httpClient.Do(req)
+		if err != nil {
+			return err
+		}
+		defer res.Body.Close()
+		simutil.Logger.Info("add location labels success", zap.String("labels", string(content)))
 	}
 	return nil
 }
