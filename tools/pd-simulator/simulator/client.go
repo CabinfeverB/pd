@@ -29,6 +29,7 @@ import (
 	"github.com/pingcap/kvproto/pkg/metapb"
 	"github.com/pingcap/kvproto/pkg/pdpb"
 	"github.com/tikv/pd/server/core"
+	"github.com/tikv/pd/server/schedule/placement"
 	"github.com/tikv/pd/tools/pd-simulator/simulator/simutil"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -85,6 +86,7 @@ func NewClient(pdAddr string, tag string) (Client, <-chan *pdpb.RegionHeartbeatR
 		ctx:                      ctx,
 		cancel:                   cancel,
 		tag:                      tag,
+		httpClient:               &http.Client{},
 	}
 	cc, err := c.createConn()
 	if err != nil {
@@ -111,6 +113,7 @@ func (c *client) initClusterID() error {
 	for i := 0; i < maxInitClusterRetries; i++ {
 		members, err := c.getMembers(ctx)
 		if err != nil || members.GetHeader() == nil {
+			simutil.Logger.Error("getMembers error", zap.Error(err))
 			simutil.Logger.Error("failed to get cluster id", zap.String("tag", c.tag), zap.Error(err))
 			continue
 		}
@@ -311,7 +314,14 @@ func (c *client) PutStore(ctx context.Context, store *metapb.Store) error {
 func (c *client) PutPDConfig(config *PDConfig) error {
 	if len(config.PlacementRules) > 0 {
 		path := fmt.Sprintf("%s/%s/config/rules/batch", c.url, httpPrefix)
-		content, _ := json.Marshal(config.PlacementRules)
+		ruleOps := make([]*placement.RuleOp, 0)
+		for _, rule := range config.PlacementRules {
+			ruleOps = append(ruleOps, &placement.RuleOp{
+				Rule:   rule,
+				Action: placement.RuleOpAdd,
+			})
+		}
+		content, _ := json.Marshal(ruleOps)
 		req, err := http.NewRequest(http.MethodPost, path, bytes.NewBuffer(content))
 		req.Header.Add("Content-Type", "application/json")
 		if err != nil {

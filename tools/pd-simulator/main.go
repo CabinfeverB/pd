@@ -46,8 +46,8 @@ var (
 	configFile                  = flag.String("config", "conf/simconfig.toml", "config file")
 	caseName                    = flag.String("case", "", "case name")
 	serverLogLevel              = flag.String("serverLog", "fatal", "pd server log level")
-	simLogLevel                 = flag.String("simLog", "fatal", "simulator log level")
-	simLogFile                  = flag.String("simLogFile", "", "simulator log file")
+	simLogLevel                 = flag.String("simLog", "debug", "simulator log level")
+	simLogFile                  = flag.String("log-file", "", "simulator log file")
 	regionNum                   = flag.Int("regionNum", 0, "regionNum of one store")
 	storeNum                    = flag.Int("storeNum", 0, "storeNum")
 	enableTransferRegionCounter = flag.Bool("enableTransferRegionCounter", false, "enableTransferRegionCounter")
@@ -55,6 +55,7 @@ var (
 )
 
 func main() {
+	time.Sleep(3 * time.Second)
 	// ignore some undefined flag
 	flag.CommandLine.ParseErrorsWhitelist.UnknownFlags = true
 	flag.Parse()

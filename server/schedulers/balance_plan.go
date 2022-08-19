@@ -17,7 +17,6 @@ package schedulers
 import (
 	"fmt"
 
-	"github.com/pingcap/log"
 	"github.com/tikv/pd/pkg/errs"
 	"github.com/tikv/pd/server/core"
 	"github.com/tikv/pd/server/schedule/plan"
@@ -113,6 +112,7 @@ func BalancePlanSummary(plans []plan.Plan) (string, error) {
 			return "", errs.ErrDiagnoseLoadPlanError
 		}
 		step := p.GetStep()
+		//log.Info(fmt.Sprintf("Plan: %v %v %v %v %d", step, p.GetStatus(), p.GetCoreResource(0), p.GetCoreResource(1), p.GetCoreResource(2)))
 		// we don't consider the situation for verification step
 		if step > 2 {
 			continue
@@ -133,7 +133,7 @@ func BalancePlanSummary(plans []plan.Plan) (string, error) {
 			firstGroup[store] = make(map[plan.Status]int)
 		}
 		firstGroup[store][*p.status]++
-		log.Info(fmt.Sprintf("%d %s", store, p.status.String()))
+		//log.Info(fmt.Sprintf("%d %s", store, p.status.String()))
 	}
 
 	for _, store := range firstGroup {
@@ -144,8 +144,10 @@ func BalancePlanSummary(plans []plan.Plan) (string, error) {
 				max = c
 				curstat = stat
 			}
+			//log.Info(fmt.Sprintf("+++ %v : %v %v %v %v", id, max, c, curstat, stat))
 		}
 		secondGroup[curstat] += 1
+		//log.Info(fmt.Sprintf("--- %v : %v", id, secondGroup))
 	}
 	var resstr string
 	for k, v := range secondGroup {

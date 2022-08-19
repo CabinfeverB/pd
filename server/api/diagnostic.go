@@ -17,7 +17,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/tikv/pd/pkg/apiutil"
+	"github.com/gorilla/mux"
 	"github.com/tikv/pd/server"
 	"github.com/tikv/pd/server/schedulers"
 	"github.com/unrolled/render"
@@ -36,16 +36,7 @@ func newDiagnosticHandler(svr *server.Server, rd *render.Render) *diagnosticHand
 }
 
 func (h *diagnosticHandler) GetDiagnosticResult(w http.ResponseWriter, r *http.Request) {
-	var input map[string]interface{}
-	if err := apiutil.ReadJSONRespondError(h.rd, w, r.Body, &input); err != nil {
-		return
-	}
-
-	name, ok := input["name"].(string)
-	if !ok {
-		h.rd.JSON(w, http.StatusBadRequest, "missing scheduler name")
-		return
-	}
+	name := mux.Vars(r)["name"]
 
 	switch name {
 	case schedulers.BalanceRegionName:

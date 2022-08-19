@@ -54,8 +54,8 @@ func newRule1() *Case {
 		simCase.Stores = append(simCase.Stores, &Store{
 			ID:        id,
 			Status:    metapb.StoreState_Up,
-			Capacity:  100 * units.GiB,
-			Available: 50 * units.GiB,
+			Capacity:  1000 * units.GiB,
+			Available: 500 * units.GiB,
 			Version:   "2.1.0",
 		})
 	}
@@ -71,11 +71,12 @@ func newRule1() *Case {
 
 	for i := 0; i < regionNum; i++ {
 		peers := []*metapb.Peer{
-			{Id: IDAllocator.nextID(), StoreId: uint64(i%(storeNum-1) + 1)},
-			{Id: IDAllocator.nextID(), StoreId: uint64((i+1)%(storeNum-1) + 1)},
-			{Id: IDAllocator.nextID(), StoreId: uint64((i+2)%(storeNum-1) + 1)},
-			{Id: IDAllocator.nextID(), StoreId: uint64((i+3)%(storeNum-1) + 1)},
-			{Id: IDAllocator.nextID(), StoreId: uint64((i+4)%(storeNum-1) + 1)},
+			{Id: IDAllocator.nextID(), StoreId: uint64(i%(storeNum-5) + 5)},
+			{Id: IDAllocator.nextID(), StoreId: uint64((i+1)%(storeNum-5) + 5)},
+			{Id: IDAllocator.nextID(), StoreId: uint64((i+2)%(storeNum-5) + 5)},
+			{Id: IDAllocator.nextID(), StoreId: uint64((i+3)%(storeNum-5) + 5)},
+			{Id: IDAllocator.nextID(), StoreId: uint64(i%(storeNum-5) + 1)},
+			{Id: IDAllocator.nextID(), StoreId: uint64(9), Role: metapb.PeerRole_Learner},
 		}
 		simCase.Regions = append(simCase.Regions, Region{
 			ID:     IDAllocator.nextID(),
@@ -95,7 +96,7 @@ func newRule1() *Case {
 		for i := 1; i <= storeNum; i++ {
 			available := stats[i].GetAvailable()
 			storesAvailable = append(storesAvailable, available)
-			if curTime-storesLastUpdateTime[i] > 60 {
+			if curTime-storesLastUpdateTime[i] > 180 {
 				if storeLastAvailable[i] != available {
 					res = false
 				}

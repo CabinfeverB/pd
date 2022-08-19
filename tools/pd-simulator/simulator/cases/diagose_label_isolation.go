@@ -91,19 +91,19 @@ func newLabelIsolation1() *Case {
 		simCase.Stores = append(simCase.Stores, &Store{
 			ID:        id,
 			Status:    metapb.StoreState_Up,
-			Capacity:  100 * units.GiB,
-			Available: 50 * units.GiB,
+			Capacity:  1000 * units.GiB,
+			Available: 500 * units.GiB,
 			Version:   "2.1.0",
 			Labels:    []*metapb.StoreLabel{{Key: "host", Value: fmt.Sprintf("host%d", id)}},
 		})
 	}
-	id := IDAllocator.nextID()
+	id := IDAllocator.GetID() + 1
 	for i := 0; i < num2; i++ {
 		simCase.Stores = append(simCase.Stores, &Store{
 			ID:        IDAllocator.nextID(),
 			Status:    metapb.StoreState_Up,
-			Capacity:  100 * units.GiB,
-			Available: 50 * units.GiB,
+			Capacity:  1000 * units.GiB,
+			Available: 500 * units.GiB,
 			Version:   "2.1.0",
 			Labels:    []*metapb.StoreLabel{{Key: "host", Value: fmt.Sprintf("host%d", id)}},
 		})
@@ -113,7 +113,7 @@ func newLabelIsolation1() *Case {
 		peers := []*metapb.Peer{
 			{Id: IDAllocator.nextID(), StoreId: uint64(i%num1 + 1)},
 			{Id: IDAllocator.nextID(), StoreId: uint64((i+1)%num1 + 1)},
-			{Id: IDAllocator.nextID(), StoreId: uint64(i%storeNum + num1 + 1)},
+			{Id: IDAllocator.nextID(), StoreId: uint64(i%num2 + num1 + 1)},
 		}
 		simCase.Regions = append(simCase.Regions, Region{
 			ID:     IDAllocator.nextID(),
