@@ -229,7 +229,9 @@ func (r *RegionScatterer) scatterRegions(regions map[uint64]*core.RegionInfo, fa
 	opsCount := 0
 	for currentRetry := 0; currentRetry <= retryLimit; currentRetry++ {
 		for _, region := range regions {
+			log.Info("begin", zap.Uint64("region", region.GetID()))
 			op, err := r.Scatter(region, group)
+			log.Info("end", zap.Uint64("region", region.GetID()))
 			failpoint.Inject("scatterFail", func() {
 				if region.GetID() == 1 {
 					err = errors.New("mock error")
@@ -240,7 +242,9 @@ func (r *RegionScatterer) scatterRegions(regions map[uint64]*core.RegionInfo, fa
 				continue
 			}
 			if op != nil {
+				log.Info("begin add", zap.Uint64("region", region.GetID()))
 				if ok := r.opController.AddOperator(op); !ok {
+					log.Info("fail", zap.Uint64("region", region.GetID()))
 					// If there existed any operator failed to be added into Operator Controller, add its regions into unProcessedRegions
 					failures[op.RegionID()] = fmt.Errorf("region %v failed to add operator", op.RegionID())
 					continue
@@ -355,6 +359,14 @@ func (r *RegionScatterer) scatterRegion(region *core.RegionInfo, group string) *
 		r.Put(targetPeers, targetLeader, group)
 		return nil
 	}
+
+	for _, peer := range region.GetPeers() {
+		log.Info("scatter", zap.Uint64("targetPeer", peer.GetStoreId()), zap.Any("", r.cluster.GetOpts().GetScheduleConfig().StoreLimit[peer.GetStoreId()]))
+	}
+	for _, peer := range targetPeers {
+		log.Info("scatter", zap.Uint64("targetPeer", peer.GetStoreId()), zap.Any("", r.cluster.GetOpts().GetScheduleConfig().StoreLimit[peer.GetStoreId()]))
+	}
+	log.Info("scatter", zap.Uint64("transferleader", targetLeader))
 	op, err := operator.CreateScatterRegionOperator("scatter-region", r.cluster, region, targetPeers, targetLeader)
 	if err != nil {
 		scatterCounter.WithLabelValues("fail", "").Inc()
