@@ -438,6 +438,35 @@ func (s *testScatterRegionSuite) TestScattersGroup(c *C) {
 	}
 }
 
+func (s *testScatterRegionSuite) TestScatterForManyRegion(c *C) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	opt := config.NewTestOptions()
+	tc := mockcluster.NewCluster(ctx, opt)
+	stream := hbstream.NewTestHeartbeatStreams(ctx, tc.ID, tc, true)
+	oc := NewOperatorController(ctx, tc, stream)
+	// Add 60 stores.
+	for i := uint64(1); i <= 60; i++ {
+		tc.AddRegionStore(i, 0)
+		// prevent store from being disconnected
+		tc.SetStoreLastHeartbeatInterval(i, -10*time.Minute)
+	}
+
+	scatterer := NewRegionScatterer(ctx, tc)
+	regions := make(map[uint64]*core.RegionInfo)
+	for i := 1; i <= 15000; i++ {
+		regions[uint64(i)] = tc.AddLightLeaderRegion(uint64(i), 1, 2, 3)
+	}
+	failures := map[uint64]error{}
+	group := "group"
+	ops, err := scatterer.ScatterRegions(regions, failures, group, 2)
+	c.Assert(err, IsNil)
+	for _, op := range ops {
+		c.Assert(oc.AddOperator(op), IsTrue)
+	}
+	c.Assert(failures, HasLen, 0)
+}
+
 func (s *testScatterRegionSuite) TestSelectedStoreGC(c *C) {
 	// use a shorter gcTTL and gcInterval during the test
 	gcInterval = time.Second
