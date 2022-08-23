@@ -438,14 +438,8 @@ func TestScatterForManyRegion(t *testing.T) {
 	}
 	failures := map[uint64]error{}
 	group := "group"
-	re.NoError(failpoint.Enable("github.com/tikv/pd/server/schedule/scatterHbStreamsDrain", `return(true)`))
 	scatterer.scatterRegions(regions, failures, group, 3)
-	re.NoError(failpoint.Disable("github.com/tikv/pd/server/schedule/scatterHbStreamsDrain"))
 	re.Len(failures, 0)
-	for regionID := range regions {
-		op := oc.GetOperator(regionID)
-		oc.RemoveOperator(op)
-	}
 }
 
 func TestScattersGroup(t *testing.T) {
