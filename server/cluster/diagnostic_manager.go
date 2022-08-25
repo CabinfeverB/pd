@@ -90,7 +90,11 @@ func (d *diagnosticManager) analyze(name string, ops []*operator.Operator, plans
 		}
 		res.Status = pending
 		if summaryFunc, ok := d.SummaryFuncs[schedulers.BalanceRegionName]; ok {
-			res.Summary, _ = summaryFunc(plans)
+			isAllNormal := false
+			res.Summary, isAllNormal, _ = summaryFunc(plans)
+			if isAllNormal {
+				res.Status = normal
+			}
 		}
 		return res
 	default:

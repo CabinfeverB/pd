@@ -102,14 +102,15 @@ func (p *balanceSchedulerPlan) Clone(opts ...plan.Option) plan.Plan {
 	return plan
 }
 
-func BalancePlanSummary(plans []plan.Plan) (string, error) {
+func BalancePlanSummary(plans []plan.Plan) (string, bool, error) {
 	secondGroup := make(map[plan.Status]uint64)
 	var firstGroup map[uint64]map[plan.Status]int
 	maxStep := -1
+	normal := true
 	for _, pi := range plans {
 		p, ok := pi.(*balanceSchedulerPlan)
 		if !ok {
-			return "", errs.ErrDiagnoseLoadPlanError
+			return "", false, errs.ErrDiagnoseLoadPlanError
 		}
 		step := p.GetStep()
 		//log.Info(fmt.Sprintf("Plan: %v %v %v %v %d", step, p.GetStatus(), p.GetCoreResource(0), p.GetCoreResource(1), p.GetCoreResource(2)))
@@ -124,6 +125,9 @@ func BalancePlanSummary(plans []plan.Plan) (string, error) {
 			continue
 		}
 		var store uint64
+		if !p.status.IsNormal() {
+			normal = false
+		}
 		if step == 1 {
 			store = p.source.GetID()
 		} else {
@@ -153,5 +157,5 @@ func BalancePlanSummary(plans []plan.Plan) (string, error) {
 	for k, v := range secondGroup {
 		resstr += fmt.Sprintf("%d stores are filtered by %s; ", v, k.String())
 	}
-	return resstr, nil
+	return resstr, normal, nil
 }
