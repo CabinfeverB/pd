@@ -28,9 +28,9 @@ const (
 	// StatusStoreScoreDisallowed represents the plan is no need to be scheduled due to the score does meet the requirement.
 	StatusStoreScoreDisallowed = iota + 100
 	// StatusStoreAlreadyHasPeer represents the store is excluded due to the existed region peer.
-	StatusStoreAlreadyHasPeer
+	StatusStoreAlreadyHasPeer = iota + 110
 	// StatusNotMatchRule represents the placement rule cannot satisfy the requirement.
-	StatusStoreNotMatchRule
+	StatusStoreNotMatchRule = iota + 120
 )
 
 // soft limitation
@@ -101,43 +101,43 @@ var statusText = map[StatusCode]string{
 	StatusOK: "OK",
 
 	// store in normal state usually
-	StatusStoreScoreDisallowed: "Store Score Disallowed",
-	StatusStoreAlreadyHasPeer:  "Store Already Has Peer",
-	StatusStoreNotMatchRule:    "Store Not Match Rule",
+	StatusStoreScoreDisallowed: "StoreScoreDisallowed",
+	StatusStoreAlreadyHasPeer:  "StoreAlreadyHasPeer",
+	StatusStoreNotMatchRule:    "StoreNotMatchRule",
 
 	// store is limited by soft constraint
-	StatusStoreSnapshotThrottled:    "Store Snapshot Throttled",
-	StatusStorePendingPeerThrottled: "Store Pending Peer Throttled",
-	StatusStoreAddLimitThrottled:    "Store Add Peer Throttled",
-	StatusStoreRemoveLimitThrottled: "Store Remove Peer Throttled",
+	StatusStoreSnapshotThrottled:    "StoreSnapshotThrottled",
+	StatusStorePendingPeerThrottled: "StorePendingPeerThrottled",
+	StatusStoreAddLimitThrottled:    "StoreAddPeerThrottled",
+	StatusStoreRemoveLimitThrottled: "StoreRemovePeerThrottled",
 
 	// store is limited by specified configuration
-	StatusStoreRejectLeader:      "Store Reject Leader",
-	StatusStoreNotMatchIsolation: "Store Not Match Isolation",
+	StatusStoreRejectLeader:      "StoreRejectLeader",
+	StatusStoreNotMatchIsolation: "StoreNotMatchIsolation",
 
 	// store is limited by hard constraint
-	StatusStoreLowSpace:     "Store Low Space",
-	StatusStoreRemoving:     "Store Removing",
-	StatusStoreRemoved:      "Store Removed",
-	StatusStoreDisconnected: "Store Disconnected",
-	StatusStoreDown:         "Store Down",
-	StatusStoreBusy:         "Store Busy",
+	StatusStoreLowSpace:     "StoreLowSpace",
+	StatusStoreRemoving:     "StoreRemoving",
+	StatusStoreRemoved:      "StoreRemoved",
+	StatusStoreDisconnected: "StoreDisconnected",
+	StatusStoreDown:         "StoreDown",
+	StatusStoreBusy:         "StoreBusy",
 
-	StatusStoreNotExisted: "Store Not Existed",
+	StatusStoreNotExisted: "StoreNotExisted",
 
 	// region
-	StatusRegionHot:           "Region Hot",
-	StatusRegionUnhealthy:     "Region Unhealthy",
-	StatusRegionEmpty:         "Region Empty",
-	StatusRegionNotReplicated: "Region Not Replicated",
-	StatusRegionNotMatchRule:  "Region Not Match Rule",
+	StatusRegionHot:           "RegionHot",
+	StatusRegionUnhealthy:     "RegionUnhealthy",
+	StatusRegionEmpty:         "RegionEmpty",
+	StatusRegionNotReplicated: "RegionNotReplicated",
+	StatusRegionNotMatchRule:  "RegionNotMatch Rule",
 
 	// non-filter
-	StatusNoTargetRegion:    "No Target Region",
-	StatusRegionLabelReject: "Region Label Reject",
+	StatusNoTargetRegion:    "NoTargetRegion",
+	StatusRegionLabelReject: "RegionLabelReject",
 
 	// operator
-	StatusCreateOperatorFailed: "Create Operator Failed",
+	StatusCreateOperatorFailed: "CreateOperatorFailed",
 }
 
 // StatusText turns the status code into string.
@@ -177,10 +177,10 @@ func (s *Status) Priority() int {
 	if s == nil {
 		return 0
 	}
-	return int(s.StatusCode) / 100
+	return int(s.StatusCode) / 10
 }
 
 // IsNormal returns true if the status is noraml.
 func (s *Status) IsNormal() bool {
-	return int(s.StatusCode)/100 == 1
+	return int(s.StatusCode)/10 == 10
 }

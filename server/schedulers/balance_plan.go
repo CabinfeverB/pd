@@ -155,7 +155,7 @@ func BalancePlanSummary(plans []plan.Plan) (string, bool, error) {
 	}
 	var resstr string
 	for k, v := range secondGroup {
-		resstr += fmt.Sprintf("%d stores are filtered by %s; ", v, k.String())
+		resstr += fmt.Sprintf("%d store(s) %s; ", v, k.String())
 	}
 	return resstr, normal, nil
 }
