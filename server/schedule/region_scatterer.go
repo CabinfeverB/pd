@@ -122,6 +122,7 @@ type RegionScatterer struct {
 	ordinaryEngine engineContext
 	specialEngines map[string]engineContext
 	opController   *OperatorController
+	regionUsed     sync.Map
 }
 
 // NewRegionScatterer creates a region scatterer.
@@ -223,6 +224,10 @@ func (r *RegionScatterer) scatterRegions(regions map[uint64]*core.RegionInfo, fa
 	opsCount := 0
 	for currentRetry := 0; currentRetry <= retryLimit; currentRetry++ {
 		for _, region := range regions {
+			_, ok := r.regionUsed.Load(region.GetID())
+			if ok {
+				continue
+			}
 			op, err := r.Scatter(region, group)
 			failpoint.Inject("scatterFail", func() {
 				if region.GetID() == 1 {
@@ -233,6 +238,7 @@ func (r *RegionScatterer) scatterRegions(regions map[uint64]*core.RegionInfo, fa
 				failures[region.GetID()] = err
 				continue
 			}
+			r.regionUsed.Store(region.GetID(), struct{}{})
 			delete(regions, region.GetID())
 			opsCount++
 			if op != nil {

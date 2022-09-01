@@ -317,13 +317,7 @@ func (oc *OperatorController) AddWaitingOperator(ops ...*operator.Operator) int 
 
 // AddOperator adds operators to the running operators.
 func (oc *OperatorController) AddOperator(ops ...*operator.Operator) bool {
-	lockTimeBegin := time.Now()
 	oc.Lock()
-	lockTimeEnd := time.Now()
-	log.Info("operator lock cost", zap.Duration("cost", lockTimeEnd.Sub(lockTimeBegin)))
-	if lockTimeEnd.Sub(lockTimeBegin) > operator.OperatorExpireTime {
-		log.Info("lock causing operator expired", zap.Duration("cost", lockTimeEnd.Sub(lockTimeBegin)), zap.Int("operator count", len(oc.operators)))
-	}
 	defer oc.Unlock()
 
 	if oc.exceedStoreLimitLocked(ops...) || !oc.checkAddOperator(ops...) {
