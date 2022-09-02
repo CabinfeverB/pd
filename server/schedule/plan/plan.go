@@ -19,6 +19,7 @@ package plan
 type Plan interface {
 	GetStep() int
 	GetStatus() *Status
+	GetResource(int) uint64
 
 	Clone(ops ...Option) Plan // generate plan for clone option
 	SetResource(interface{})
@@ -26,6 +27,11 @@ type Plan interface {
 }
 
 type Summary func([]Plan) (string, bool, error)
+
+// Analyzer is used to analyse plan
+type Analyzer interface {
+	Summary(interface{}) (string, error)
+}
 
 // Collector is a plan collector
 type Collector struct {

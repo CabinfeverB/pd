@@ -790,7 +790,7 @@ const (
 	defaultMaxPendingPeerCount       = 64
 	defaultMaxMergeRegionSize        = 20
 	defaultSplitMergeInterval        = time.Hour
-	defaultDiagnosticInterval        = 0
+	defaultDiagnosticInterval        = time.Minute
 	defaultPatrolRegionInterval      = 10 * time.Millisecond
 	defaultMaxStoreDownTime          = 30 * time.Minute
 	defaultLeaderScheduleLimit       = 4

@@ -40,7 +40,9 @@ const (
 	maxDiagnosticResultNum = 10
 )
 
-var SummaryFuncs = map[string]plan.Summary{}
+var SummaryFuncs = map[string]plan.Summary{
+	schedulers.BalanceRegionName: schedulers.BalancePlanSummary,
+}
 
 type diagnosticManager struct {
 	syncutil.RWMutex
@@ -107,7 +109,7 @@ func (d *diagnosticWorker) run() {
 	if d == nil {
 		return
 	}
-	if d.result != nil {
+	if d.result == nil {
 		d.result = cache.NewFIFO(maxDiagnosticResultNum)
 	}
 }
@@ -133,23 +135,23 @@ func (d *diagnosticWorker) getLastResult() *DiagnosticResult {
 	if d.result.Len() == 0 {
 		return nil
 	}
-	// TODO: implment
-	return nil
+	return d.result.Elems()[d.result.Len()-1].Value.(*DiagnosticResult)
 }
 
 func (d *diagnosticWorker) generateStatus(status string) {
 	if d == nil {
 		return
 	}
-	// TODO: implment
+	result := &DiagnosticResult{Name: d.schedulerName, Timestamp: uint64(time.Now().Unix()), Status: status}
+	d.result.Put(result.Timestamp, result)
 }
 
 func (d *diagnosticWorker) generatePlans(ops []*operator.Operator, plans []plan.Plan) {
 	if d == nil {
 		return
 	}
-	// TODO: implment
-	d.analyze(ops, plans, uint64(time.Now().Unix()))
+	result := d.analyze(ops, plans, uint64(time.Now().Unix()))
+	d.result.Put(result.Timestamp, result)
 }
 
 func (d *diagnosticWorker) analyze(ops []*operator.Operator, plans []plan.Plan, ts uint64) *DiagnosticResult {
@@ -157,6 +159,21 @@ func (d *diagnosticWorker) analyze(ops []*operator.Operator, plans []plan.Plan, 
 	name := d.schedulerName
 	// TODO: support more schedulers and checkers
 	switch name {
+	case schedulers.BalanceRegionName:
+		runningNum := d.cluster.GetOperatorController().OperatorCount(operator.OpRegion)
+		if runningNum != 0 || len(ops) != 0 {
+			res.Status = scheduling
+			return res
+		}
+		res.Status = pending
+		if d.summaryFunc != nil {
+			isAllNormal := false
+			res.Summary, isAllNormal, _ = d.summaryFunc(plans)
+			if isAllNormal {
+				res.Status = normal
+			}
+		}
+		return res
 	default:
 	}
 	index := len(ops)
