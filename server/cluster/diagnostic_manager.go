@@ -15,11 +15,14 @@
 package cluster
 
 import (
-	"errors"
+	"fmt"
+	"sync/atomic"
 	"time"
 
+	"github.com/pingcap/errors"
 	"github.com/pingcap/log"
 	"github.com/tikv/pd/pkg/cache"
+	"github.com/tikv/pd/pkg/errs"
 	"github.com/tikv/pd/pkg/syncutil"
 	"github.com/tikv/pd/server/schedule/operator"
 	"github.com/tikv/pd/server/schedule/plan"
@@ -69,11 +72,11 @@ func (d *diagnosticManager) getDiagnosticResult(name string) (*DiagnosticResult,
 	}
 	worker := d.getWorker(name)
 	if worker == nil {
-		return nil, errors.New("todo")
+		return nil, errs.ErrSchedulerUndiagnosable.FastGenByArgs(name)
 	}
 	result := worker.getLastResult()
 	if result == nil {
-		return nil, errors.New("todo")
+		return nil, errs.ErrSchedulerDiagnosisNotRunning.FastGenByArgs(name)
 	}
 	return result, nil
 }
@@ -87,10 +90,9 @@ type diagnosticWorker struct {
 	schedulerName string
 	cluster       *RaftCluster
 	summaryFunc   plan.Summary
-	result        *cache.FIFO
+	result        *ResultMemorizer
 	//diagnosticManager *diagnosticManager
-	currentTime time.Time
-	nextTime    time.Time
+	samplingCounter uint64
 }
 
 func newDiagnosticWorker(name string, cluster *RaftCluster) *diagnosticWorker {
@@ -105,12 +107,12 @@ func newDiagnosticWorker(name string, cluster *RaftCluster) *diagnosticWorker {
 	}
 }
 
-func (d *diagnosticWorker) run() {
+func (d *diagnosticWorker) init() {
 	if d == nil {
 		return
 	}
 	if d.result == nil {
-		d.result = cache.NewFIFO(maxDiagnosticResultNum)
+		d.result = NewResultMemorizer(maxDiagnosticResultNum)
 	}
 }
 
@@ -118,17 +120,16 @@ func (d *diagnosticWorker) isAllowed() bool {
 	if d == nil {
 		return false
 	}
-	d.currentTime = time.Now()
-	ret := d.nextTime.Before(d.currentTime)
-	if ret {
-		d.setNextTime()
+	if d.cluster.opt.IsDiagnosisAllowed() {
+		return false
 	}
-	return ret
-}
-
-func (d *diagnosticWorker) setNextTime() {
-	interval := d.cluster.opt.GetDiagnosticInterval()
-	d.nextTime = d.currentTime.Add(interval)
+	currentCount := atomic.LoadUint64(&d.samplingCounter) + 1
+	if currentCount == d.cluster.opt.GetDiagnosticSamplingRate() {
+		atomic.StoreUint64(&d.samplingCounter, 0)
+		return true
+	}
+	atomic.StoreUint64(&d.samplingCounter, currentCount)
+	return false
 }
 
 func (d *diagnosticWorker) getLastResult() *DiagnosticResult {
@@ -143,7 +144,7 @@ func (d *diagnosticWorker) generateStatus(status string) {
 		return
 	}
 	result := &DiagnosticResult{Name: d.schedulerName, Timestamp: uint64(time.Now().Unix()), Status: status}
-	d.result.Put(result.Timestamp, result)
+	d.result.Put(result)
 }
 
 func (d *diagnosticWorker) generatePlans(ops []*operator.Operator, plans []plan.Plan) {
@@ -151,7 +152,7 @@ func (d *diagnosticWorker) generatePlans(ops []*operator.Operator, plans []plan.
 		return
 	}
 	result := d.analyze(ops, plans, uint64(time.Now().Unix()))
-	d.result.Put(result.Timestamp, result)
+	d.result.Put(result)
 }
 
 func (d *diagnosticWorker) analyze(ops []*operator.Operator, plans []plan.Plan, ts uint64) *DiagnosticResult {
@@ -193,6 +194,92 @@ type DiagnosticResult struct {
 	Summary   string `json:"summary"`
 	Timestamp uint64 `json:"timestamp"`
 
-	SchedulablePlans   []plan.Plan
-	UnschedulablePlans []plan.Plan
+	StoreStatus        map[uint64]*plan.Status `json:"-"`
+	SchedulablePlans   []plan.Plan             `json:"-"`
+	UnschedulablePlans []plan.Plan             `json:"-"`
+}
+
+func (r *DiagnosticResult) GetComparableAttribute() string {
+	return r.Status
+}
+
+type ResultMemorizer struct {
+	*cache.FIFO2
+}
+
+func NewResultMemorizer(maxCount int) *ResultMemorizer {
+	return &ResultMemorizer{FIFO2: cache.NewFIFO2(maxCount)}
+}
+
+func (m *ResultMemorizer) Put(result *DiagnosticResult) {
+	m.FIFO2.Put(result.Timestamp, result)
+}
+
+func (m *ResultMemorizer) GenerateResult() (*DiagnosticResult, error) {
+	items := m.FIFO2.FromLastestElems()
+	length := len(items)
+	if length == 0 {
+		return nil, errors.New("todo")
+	}
+	x1, x2, x3 := length/3, length/3, length/3
+	if (length % 3) > 0 {
+		x1++
+	}
+	if (length % 3) > 1 {
+		x2++
+	}
+	pi := 1.0 / float64(3*x1+2*x2+x3)
+	counter := make(map[uint64]map[plan.Status]float64)
+	for i := 0; i < x1; i++ {
+		item := items[i].Value.(*DiagnosticResult)
+		for storeID, status := range item.StoreStatus {
+			if _, ok := counter[storeID]; !ok {
+				counter[storeID] = make(map[plan.Status]float64)
+			}
+			statusCounter := counter[storeID]
+			statusCounter[*status] += pi * 3
+		}
+	}
+	for i := x1; i < x1+x2; i++ {
+		item := items[i].Value.(*DiagnosticResult)
+		for storeID, status := range item.StoreStatus {
+			if _, ok := counter[storeID]; !ok {
+				counter[storeID] = make(map[plan.Status]float64)
+			}
+			statusCounter := counter[storeID]
+			statusCounter[*status] += pi * 2
+		}
+	}
+	for i := x1 + x2; i < x1+x2+x3; i++ {
+		item := items[i].Value.(*DiagnosticResult)
+		for storeID, status := range item.StoreStatus {
+			if _, ok := counter[storeID]; !ok {
+				counter[storeID] = make(map[plan.Status]float64)
+			}
+			statusCounter := counter[storeID]
+			statusCounter[*status] += pi * 1
+		}
+	}
+	statusCounter := make(map[plan.Status]uint64)
+	for _, store := range counter {
+		max := 0.
+		curStat := *plan.NewStatus(plan.StatusOK)
+		for stat, c := range store {
+			if c > max {
+				max = c
+				curStat = stat
+			}
+		}
+		statusCounter[curStat] += 1
+	}
+	var resStr string
+	for k, v := range statusCounter {
+		resStr += fmt.Sprintf("%d store(s) %s; ", v, k.String())
+	}
+	return &DiagnosticResult{
+		Name:      items[0].Value.(*DiagnosticResult).Name,
+		Status:    items[0].Value.(*DiagnosticResult).Status,
+		Summary:   resStr,
+		Timestamp: uint64(time.Now().Unix()),
+	}, nil
 }

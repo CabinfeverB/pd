@@ -98,7 +98,9 @@ var (
 
 // diagnose errors
 var (
-	ErrDiagnosticLoadPlanError = errors.Normalize("load plan failed", errors.RFCCodeText("PD:diagnostic:ErrDiagnosticLoadPlanError"))
+	ErrDiagnosticLoadPlanError      = errors.Normalize("load plan failed", errors.RFCCodeText("PD:diagnostic:ErrDiagnosticLoadPlanError"))
+	ErrSchedulerUndiagnosable       = errors.Normalize("%v hasn't supported diagnostic", errors.RFCCodeText("PD:diagnose:ErrSchedulerUndiagnosable"))
+	ErrSchedulerDiagnosisNotRunning = errors.Normalize("%v is not running diagnosis", errors.RFCCodeText("PD:diagnose:ErrSchedulerDiagnosisNotRunning"))
 )
 
 // placement errors
