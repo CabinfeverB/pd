@@ -15,10 +15,11 @@
 package cluster
 
 import (
-	"errors"
 	"fmt"
+	"sync/atomic"
 	"time"
 
+	"github.com/pingcap/errors"
 	"github.com/pingcap/log"
 	"github.com/tikv/pd/pkg/cache"
 	"github.com/tikv/pd/pkg/errs"
@@ -89,8 +90,7 @@ type diagnosticWorker struct {
 	summaryFunc   plan.Summary
 	result        *cache.FIFO
 	//diagnosticManager *diagnosticManager
-	currentTime time.Time
-	nextTime    time.Time
+	samplingCounter uint64
 }
 
 func newDiagnosticWorker(name string, cluster *RaftCluster) *diagnosticWorker {
@@ -118,20 +118,16 @@ func (d *diagnosticWorker) isAllowed() bool {
 	if d == nil {
 		return false
 	}
-	if d.cluster.opt.GetDiagnosticInterval() == 0 {
+	if d.cluster.opt.IsDiagnosisAllowed() {
 		return false
 	}
-	d.currentTime = time.Now()
-	ret := d.nextTime.Before(d.currentTime)
-	if ret {
-		d.setNextTime()
+	currentCount := atomic.LoadUint64(&d.samplingCounter) + 1
+	if currentCount == d.cluster.opt.GetDiagnosticSamplingRate() {
+		atomic.StoreUint64(&d.samplingCounter, 0)
+		return true
 	}
-	return ret
-}
-
-func (d *diagnosticWorker) setNextTime() {
-	interval := d.cluster.opt.GetDiagnosticInterval()
-	d.nextTime = d.currentTime.Add(interval)
+	atomic.StoreUint64(&d.samplingCounter, currentCount)
+	return false
 }
 
 func (d *diagnosticWorker) getLastResult() *DiagnosticResult {
