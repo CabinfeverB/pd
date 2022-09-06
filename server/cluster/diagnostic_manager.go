@@ -88,7 +88,7 @@ type diagnosticWorker struct {
 	schedulerName string
 	cluster       *RaftCluster
 	summaryFunc   plan.Summary
-	result        *cache.FIFO
+	result        *ResultMemorizer
 	//diagnosticManager *diagnosticManager
 	samplingCounter uint64
 }
@@ -110,7 +110,7 @@ func (d *diagnosticWorker) init() {
 		return
 	}
 	if d.result == nil {
-		d.result = cache.NewFIFO(maxDiagnosticResultNum)
+		d.result = NewResultMemorizer(maxDiagnosticResultNum)
 	}
 }
 
