@@ -15,6 +15,8 @@
 package cluster
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/pingcap/log"
@@ -179,6 +181,92 @@ type DiagnosticResult struct {
 	Summary   string `json:"summary"`
 	Timestamp uint64 `json:"timestamp"`
 
-	SchedulablePlans   []plan.Plan
-	UnschedulablePlans []plan.Plan
+	StoreStatus        map[uint64]*plan.Status `json:"-"`
+	SchedulablePlans   []plan.Plan             `json:"-"`
+	UnschedulablePlans []plan.Plan             `json:"-"`
+}
+
+func (r *DiagnosticResult) GetComparableAttribute() string {
+	return r.Status
+}
+
+type ResultMemorizer struct {
+	*cache.FIFO2
+}
+
+func NewResultMemorizer(maxCount int) *ResultMemorizer {
+	return &ResultMemorizer{FIFO2: cache.NewFIFO2(maxCount)}
+}
+
+func (m *ResultMemorizer) Put(result *DiagnosticResult) {
+	m.FIFO2.Put(result.Timestamp, result)
+}
+
+func (m *ResultMemorizer) GenerateResult() (*DiagnosticResult, error) {
+	items := m.FIFO2.FromLastestElems()
+	length := len(items)
+	if length == 0 {
+		return nil, errors.New("todo")
+	}
+	x1, x2, x3 := length/3, length/3, length/3
+	if (length % 3) > 0 {
+		x1++
+	}
+	if (length % 3) > 1 {
+		x2++
+	}
+	pi := 1.0 / float64(3*x1+2*x2+x3)
+	counter := make(map[uint64]map[plan.Status]float64)
+	for i := 0; i < x1; i++ {
+		item := items[i].Value.(*DiagnosticResult)
+		for storeID, status := range item.StoreStatus {
+			if _, ok := counter[storeID]; !ok {
+				counter[storeID] = make(map[plan.Status]float64)
+			}
+			statusCounter := counter[storeID]
+			statusCounter[*status] += pi * 3
+		}
+	}
+	for i := x1; i < x1+x2; i++ {
+		item := items[i].Value.(*DiagnosticResult)
+		for storeID, status := range item.StoreStatus {
+			if _, ok := counter[storeID]; !ok {
+				counter[storeID] = make(map[plan.Status]float64)
+			}
+			statusCounter := counter[storeID]
+			statusCounter[*status] += pi * 2
+		}
+	}
+	for i := x1 + x2; i < x1+x2+x3; i++ {
+		item := items[i].Value.(*DiagnosticResult)
+		for storeID, status := range item.StoreStatus {
+			if _, ok := counter[storeID]; !ok {
+				counter[storeID] = make(map[plan.Status]float64)
+			}
+			statusCounter := counter[storeID]
+			statusCounter[*status] += pi * 1
+		}
+	}
+	statusCounter := make(map[plan.Status]uint64)
+	for _, store := range counter {
+		max := 0.
+		curStat := *plan.NewStatus(plan.StatusOK)
+		for stat, c := range store {
+			if c > max {
+				max = c
+				curStat = stat
+			}
+		}
+		statusCounter[curStat] += 1
+	}
+	var resStr string
+	for k, v := range statusCounter {
+		resStr += fmt.Sprintf("%d store(s) %s; ", v, k.String())
+	}
+	return &DiagnosticResult{
+		Name:      items[0].Value.(*DiagnosticResult).Name,
+		Status:    items[0].Value.(*DiagnosticResult).Status,
+		Summary:   resStr,
+		Timestamp: uint64(time.Now().Unix()),
+	}, nil
 }
