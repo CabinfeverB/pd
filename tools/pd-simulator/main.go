@@ -55,6 +55,7 @@ var (
 )
 
 func main() {
+	time.Sleep(3 * time.Second)
 	// ignore some undefined flag
 	flag.CommandLine.ParseErrorsWhitelist.UnknownFlags = true
 	flag.Parse()

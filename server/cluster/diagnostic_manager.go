@@ -19,7 +19,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pingcap/errors"
 	"github.com/pingcap/log"
 	"github.com/tikv/pd/pkg/cache"
 	"github.com/tikv/pd/pkg/errs"
@@ -120,7 +119,7 @@ func (d *diagnosticWorker) isAllowed() bool {
 	if d == nil {
 		return false
 	}
-	if d.cluster.opt.IsDiagnosisAllowed() {
+	if !d.cluster.opt.IsDiagnosisAllowed() {
 		return false
 	}
 	currentCount := atomic.LoadUint64(&d.samplingCounter) + 1
@@ -133,10 +132,11 @@ func (d *diagnosticWorker) isAllowed() bool {
 }
 
 func (d *diagnosticWorker) getLastResult() *DiagnosticResult {
-	if d.result.Len() == 0 {
+	// need to check whether result is nil when scheduler not runing(snot init diagnosticWorker)
+	if d.result == nil {
 		return nil
 	}
-	return d.result.Elems()[d.result.Len()-1].Value.(*DiagnosticResult)
+	return d.result.GenerateResult()
 }
 
 func (d *diagnosticWorker) generateStatus(status string) {
@@ -169,7 +169,7 @@ func (d *diagnosticWorker) analyze(ops []*operator.Operator, plans []plan.Plan, 
 		res.Status = pending
 		if d.summaryFunc != nil {
 			isAllNormal := false
-			res.Summary, isAllNormal, _ = d.summaryFunc(plans)
+			res.StoreStatus, isAllNormal, _ = d.summaryFunc(plans)
 			if isAllNormal {
 				res.Status = normal
 			}
@@ -194,9 +194,9 @@ type DiagnosticResult struct {
 	Summary   string `json:"summary"`
 	Timestamp uint64 `json:"timestamp"`
 
-	StoreStatus        map[uint64]*plan.Status `json:"-"`
-	SchedulablePlans   []plan.Plan             `json:"-"`
-	UnschedulablePlans []plan.Plan             `json:"-"`
+	StoreStatus        map[uint64]plan.Status `json:"-"`
+	SchedulablePlans   []plan.Plan            `json:"-"`
+	UnschedulablePlans []plan.Plan            `json:"-"`
 }
 
 func (r *DiagnosticResult) GetComparableAttribute() string {
@@ -215,11 +215,11 @@ func (m *ResultMemorizer) Put(result *DiagnosticResult) {
 	m.FIFO2.Put(result.Timestamp, result)
 }
 
-func (m *ResultMemorizer) GenerateResult() (*DiagnosticResult, error) {
+func (m *ResultMemorizer) GenerateResult() *DiagnosticResult {
 	items := m.FIFO2.FromLastestElems()
 	length := len(items)
 	if length == 0 {
-		return nil, errors.New("todo")
+		return nil
 	}
 	x1, x2, x3 := length/3, length/3, length/3
 	if (length % 3) > 0 {
@@ -237,7 +237,7 @@ func (m *ResultMemorizer) GenerateResult() (*DiagnosticResult, error) {
 				counter[storeID] = make(map[plan.Status]float64)
 			}
 			statusCounter := counter[storeID]
-			statusCounter[*status] += pi * 3
+			statusCounter[status] += pi * 3
 		}
 	}
 	for i := x1; i < x1+x2; i++ {
@@ -247,7 +247,7 @@ func (m *ResultMemorizer) GenerateResult() (*DiagnosticResult, error) {
 				counter[storeID] = make(map[plan.Status]float64)
 			}
 			statusCounter := counter[storeID]
-			statusCounter[*status] += pi * 2
+			statusCounter[status] += pi * 2
 		}
 	}
 	for i := x1 + x2; i < x1+x2+x3; i++ {
@@ -257,11 +257,12 @@ func (m *ResultMemorizer) GenerateResult() (*DiagnosticResult, error) {
 				counter[storeID] = make(map[plan.Status]float64)
 			}
 			statusCounter := counter[storeID]
-			statusCounter[*status] += pi * 1
+			statusCounter[status] += pi * 1
 		}
 	}
 	statusCounter := make(map[plan.Status]uint64)
-	for _, store := range counter {
+	for id, store := range counter {
+		log.Info("statusCounter", zap.Uint64("id", id), zap.String("store", fmt.Sprintf("%+v", store)))
 		max := 0.
 		curStat := *plan.NewStatus(plan.StatusOK)
 		for stat, c := range store {
@@ -272,6 +273,7 @@ func (m *ResultMemorizer) GenerateResult() (*DiagnosticResult, error) {
 		}
 		statusCounter[curStat] += 1
 	}
+	log.Info("statusCounter", zap.String("statusCounter", fmt.Sprintf("%+v", statusCounter)))
 	var resStr string
 	for k, v := range statusCounter {
 		resStr += fmt.Sprintf("%d store(s) %s; ", v, k.String())
@@ -281,5 +283,5 @@ func (m *ResultMemorizer) GenerateResult() (*DiagnosticResult, error) {
 		Status:    items[0].Value.(*DiagnosticResult).Status,
 		Summary:   resStr,
 		Timestamp: uint64(time.Now().Unix()),
-	}, nil
+	}
 }

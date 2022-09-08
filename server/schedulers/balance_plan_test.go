@@ -22,7 +22,6 @@ import (
 	"github.com/pingcap/kvproto/pkg/metapb"
 	"github.com/stretchr/testify/suite"
 	"github.com/tikv/pd/server/core"
-	"github.com/tikv/pd/server/schedule/plan"
 )
 
 type balanceSchedulerPlanAnalyzeTestSuite struct {
@@ -123,95 +122,4 @@ func (suite *balanceSchedulerPlanAnalyzeTestSuite) SetupSuite() {
 
 func (suite *balanceSchedulerPlanAnalyzeTestSuite) TearDownSuite() {
 	suite.cancel()
-}
-
-func (suite *balanceSchedulerPlanAnalyzeTestSuite) TestAnalyzerResult1() {
-	plans := make([]plan.Plan, 0)
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[4], step: 2, target: suite.stores[0], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[4], step: 2, target: suite.stores[1], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[4], step: 2, target: suite.stores[2], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[4], step: 2, target: suite.stores[3], status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[4], step: 2, target: suite.stores[4], status: plan.NewStatus(plan.StatusStoreAlreadyHasPeer)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[3], step: 2, target: suite.stores[0], status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[3], step: 2, target: suite.stores[1], status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[3], step: 2, target: suite.stores[2], status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[3], step: 2, target: suite.stores[3], status: plan.NewStatus(plan.StatusStoreAlreadyHasPeer)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[3], step: 2, target: suite.stores[4], status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[2], step: 2, target: suite.stores[0], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[2], step: 2, target: suite.stores[1], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[2], step: 2, target: suite.stores[2], status: plan.NewStatus(plan.StatusStoreAlreadyHasPeer)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[2], step: 2, target: suite.stores[3], status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[2], step: 2, target: suite.stores[4], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], step: 2, target: suite.stores[0], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], step: 2, target: suite.stores[1], status: plan.NewStatus(plan.StatusStoreAlreadyHasPeer)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], step: 2, target: suite.stores[2], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], step: 2, target: suite.stores[3], status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], step: 2, target: suite.stores[4], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], step: 2, target: suite.stores[0], status: plan.NewStatus(plan.StatusStoreAlreadyHasPeer)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], step: 2, target: suite.stores[1], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], step: 2, target: suite.stores[2], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], step: 2, target: suite.stores[3], status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], step: 2, target: suite.stores[4], status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	str, _, err := BalancePlanSummary(plans)
-	suite.NoError(err)
-	suite.True(suite.check(str,
-		map[string]struct{}{
-			"4 store(s) StoreScoreDisallowed": {},
-			"1 store(s) StoreNotMatchRule":    {},
-		}))
-}
-
-func (suite *balanceSchedulerPlanAnalyzeTestSuite) TestAnalyzerResult2() {
-	plans := make([]plan.Plan, 0)
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[4], step: 0, status: plan.NewStatus(plan.StatusStoreDown)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[3], step: 0, status: plan.NewStatus(plan.StatusStoreDown)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[2], step: 0, status: plan.NewStatus(plan.StatusStoreDown)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], step: 0, status: plan.NewStatus(plan.StatusStoreDown)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], step: 0, status: plan.NewStatus(plan.StatusStoreDown)})
-	str, _, err := BalancePlanSummary(plans)
-	suite.NoError(err)
-	suite.True(suite.check(str,
-		map[string]struct{}{
-			"5 store(s) StoreDown": {},
-		}))
-}
-
-func (suite *balanceSchedulerPlanAnalyzeTestSuite) TestAnalyzerResult3() {
-	plans := make([]plan.Plan, 0)
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[4], step: 0, status: plan.NewStatus(plan.StatusStoreDown)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[3], region: suite.regions[0], step: 1, status: plan.NewStatus(plan.StatusRegionNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[2], region: suite.regions[0], step: 1, status: plan.NewStatus(plan.StatusRegionNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], region: suite.regions[1], step: 1, status: plan.NewStatus(plan.StatusRegionNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], region: suite.regions[1], step: 1, status: plan.NewStatus(plan.StatusRegionNotMatchRule)})
-	str, _, err := BalancePlanSummary(plans)
-	suite.NoError(err)
-	suite.True(suite.check(str,
-		map[string]struct{}{
-			"4 store(s) RegionNotMatchRule": {},
-		}))
-}
-
-func (suite *balanceSchedulerPlanAnalyzeTestSuite) TestAnalyzerResult4() {
-	plans := make([]plan.Plan, 0)
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[4], step: 0, status: plan.NewStatus(plan.StatusStoreDown)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[3], region: suite.regions[0], step: 1, status: plan.NewStatus(plan.StatusRegionNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[2], region: suite.regions[0], step: 1, status: plan.NewStatus(plan.StatusRegionNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], target: suite.stores[0], step: 2, status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], target: suite.stores[1], step: 2, status: plan.NewStatus(plan.StatusStoreAlreadyHasPeer)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], target: suite.stores[2], step: 2, status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], target: suite.stores[3], step: 2, status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[1], target: suite.stores[4], step: 2, status: plan.NewStatus(plan.StatusStoreDown)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], target: suite.stores[0], step: 2, status: plan.NewStatus(plan.StatusStoreAlreadyHasPeer)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], target: suite.stores[1], step: 2, status: plan.NewStatus(plan.StatusStoreScoreDisallowed)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], target: suite.stores[2], step: 2, status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], target: suite.stores[3], step: 2, status: plan.NewStatus(plan.StatusStoreNotMatchRule)})
-	plans = append(plans, &balanceSchedulerPlan{source: suite.stores[0], target: suite.stores[4], step: 2, status: plan.NewStatus(plan.StatusStoreDown)})
-	str, _, err := BalancePlanSummary(plans)
-	suite.NoError(err)
-	suite.True(suite.check(str,
-		map[string]struct{}{
-			"2 store(s) StoreScoreDisallowed": {},
-			"2 store(s) StoreNotMatchRule":    {},
-			"1 store(s) StoreDown":            {},
-		}))
 }

@@ -17,9 +17,11 @@ package schedulers
 import (
 	"fmt"
 
+	"github.com/pingcap/log"
 	"github.com/tikv/pd/pkg/errs"
 	"github.com/tikv/pd/server/core"
 	"github.com/tikv/pd/server/schedule/plan"
+	"go.uber.org/zap"
 )
 
 type balanceSchedulerPlan struct {
@@ -71,6 +73,20 @@ func (p *balanceSchedulerPlan) GetResource(step int) uint64 {
 	return 0
 }
 
+func (p *balanceSchedulerPlan) Desc() string {
+	var source, target, region uint64
+	if p.source != nil {
+		source = p.source.GetID()
+	}
+	if p.target != nil {
+		target = p.target.GetID()
+	}
+	if p.region != nil {
+		region = p.region.GetID()
+	}
+	return fmt.Sprintf("%d %d %d %s", source, target, region, p.status.String())
+}
+
 func (p *balanceSchedulerPlan) GetStatus() *plan.Status {
 	return p.status
 }
@@ -100,17 +116,19 @@ func (p *balanceSchedulerPlan) Clone(opts ...plan.Option) plan.Plan {
 }
 
 // BalancePlanSummary is used to summarize for BalancePlan
-func BalancePlanSummary(plans []plan.Plan) (string, bool, error) {
+func BalancePlanSummary(plans []plan.Plan) (map[uint64]plan.Status, bool, error) {
 	// storeStatusCounter is used to count the number of various statuses of each store
 	var storeStatusCounter map[uint64]map[plan.Status]int
 	// statusCounter is used to count the number of status which is regarded as best status of each store
-	statusCounter := make(map[plan.Status]uint64)
+	statusCounter := make(map[uint64]plan.Status)
 	maxStep := -1
 	normal := true
+	log.Info("Begin", zap.String("!!", "_______________________________-"))
 	for _, pi := range plans {
 		p, ok := pi.(*balanceSchedulerPlan)
+		log.Info("plan", zap.String("plan", p.Desc()))
 		if !ok {
-			return "", false, errs.ErrDiagnosticLoadPlanError
+			return nil, false, errs.ErrDiagnosticLoadPlanError
 		}
 		step := p.GetStep()
 		// we don't consider the situation for verification step
@@ -140,7 +158,7 @@ func BalancePlanSummary(plans []plan.Plan) (string, bool, error) {
 		storeStatusCounter[store][*p.status]++
 	}
 
-	for _, store := range storeStatusCounter {
+	for id, store := range storeStatusCounter {
 		max := 0
 		curStat := *plan.NewStatus(plan.StatusOK)
 		for stat, c := range store {
@@ -149,13 +167,10 @@ func BalancePlanSummary(plans []plan.Plan) (string, bool, error) {
 				curStat = stat
 			}
 		}
-		statusCounter[curStat] += 1
+		statusCounter[id] = curStat
 	}
-	var resStr string
-	for k, v := range statusCounter {
-		resStr += fmt.Sprintf("%d store(s) %s; ", v, k.String())
-	}
-	return resStr, normal, nil
+	log.Info("statusCounter", zap.String("statusCounter", fmt.Sprintf("%+v", statusCounter)))
+	return statusCounter, normal, nil
 }
 
 // balancePlanStatusComparer returns true if new status is better than old one.

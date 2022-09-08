@@ -26,7 +26,7 @@ type Plan interface {
 	SetStatus(*Status)
 }
 
-type Summary func([]Plan) (string, bool, error)
+type Summary func([]Plan) (map[uint64]Status, bool, error)
 
 // Analyzer is used to analyse plan
 type Analyzer interface {
