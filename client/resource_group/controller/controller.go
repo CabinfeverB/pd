@@ -408,7 +408,7 @@ func (c *ResourceGroupsController) sendTokenBucketRequests(ctx context.Context, 
 		c.responseDeadlineCh = c.run.responseDeadline.C
 	}
 	go func() {
-		log.Debug("[resource group controller] send token bucket request", zap.Time("now", now), zap.Any("req", req.Requests), zap.String("source", source))
+		log.Info("[resource group controller] send token bucket request", zap.Time("now", now), zap.Any("req", req.Requests), zap.String("source", source))
 		resp, err := c.provider.AcquireTokenBuckets(ctx, req)
 		latency := time.Since(now)
 		if err != nil {
@@ -421,7 +421,7 @@ func (c *ResourceGroupsController) sendTokenBucketRequests(ctx context.Context, 
 		} else {
 			successfulTokenRequestDuration.Observe(latency.Seconds())
 		}
-		log.Debug("[resource group controller] token bucket response", zap.Time("now", time.Now()), zap.Any("resp", resp), zap.String("source", source), zap.Duration("latency", latency))
+		log.Info("[resource group controller] token bucket response", zap.Time("now", time.Now()), zap.Any("resp", resp), zap.String("source", source), zap.Duration("latency", latency))
 		c.tokenResponseChan <- resp
 	}()
 }
@@ -860,6 +860,8 @@ func (gc *groupCostController) modifyTokenCounter(counter *tokenCounter, bucket 
 		cfg.NewRate = float64(bucket.GetSettings().FillRate)
 		counter.lastDeadline = time.Time{}
 		cfg.NotifyThreshold = math.Min((granted+counter.limiter.AvailableTokens(gc.run.now)), counter.avgRUPerSec*float64(defaultTargetPeriod)) * notifyFraction
+		log.Info("modifyTokenCounter", zap.Float64("cfg.NotifyThreshold", cfg.NotifyThreshold), zap.Int64("cfg.NewBurst", cfg.NewBurst),
+			zap.Float64("granted+counter.limiter.AvailableTokens(gc.run.now)", granted+counter.limiter.AvailableTokens(gc.run.now)), zap.Float64("counter.avgRUPerSec*float64(defaultTargetPeriod)", counter.avgRUPerSec*float64(defaultTargetPeriod)))
 		// In the non-trickle case, clients can be allowed to accumulate more tokens.
 		if cfg.NewBurst >= 0 {
 			cfg.NewBurst = 0
@@ -976,6 +978,7 @@ func (gc *groupCostController) calcRequest(counter *tokenCounter) float64 {
 	// Therefore, when the fillrate of resource group increases, `needTokensAmplification` can enable the client to obtain more tokens.
 	value := counter.avgRUPerSec * gc.run.targetPeriod.Seconds() * needTokensAmplification
 	value -= counter.limiter.AvailableTokens(gc.run.now)
+	log.Info("calcRequest", zap.Float64("value", value), zap.Float64("counter.limiter.AvailableTokens(gc.run.now)", counter.limiter.AvailableTokens(gc.run.now)), zap.Float64("counter.avgRUPerSec", counter.avgRUPerSec))
 	if value < 0 {
 		value = 0
 	}
