@@ -371,6 +371,22 @@ func (c *ResourceGroupsController) collectTokenBucketRequests(ctx context.Contex
 		request := gc.collectRequestAndConsumption(typ)
 		if request != nil {
 			c.run.currentRequests = append(c.run.currentRequests, request)
+			consumption := request.GetConsumptionSinceLastRequest()
+			if consumption != nil {
+				var (
+					name       = request.GetResourceGroupName()
+					rruMetrics = readRequestUnitCost.WithLabelValues(name)
+					wruMetrics = writeRequestUnitCost.WithLabelValues(name)
+				)
+				resourceGroupTokenRequestCounter.WithLabelValues(name).Inc()
+				// RU info.
+				if consumption.RRU != 0 {
+					rruMetrics.Observe(consumption.RRU)
+				}
+				if consumption.WRU != 0 {
+					wruMetrics.Observe(consumption.WRU)
+				}
+			}
 			gc.tokenRequestCounter.Inc()
 		}
 		return true

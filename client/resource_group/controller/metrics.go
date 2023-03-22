@@ -20,6 +20,7 @@ const (
 	namespace             = "resource_manager_client"
 	requestSubsystem      = "request"
 	tokenRequestSubsystem = "token_request"
+	ruSubsystem           = "resource_unit"
 
 	resourceGroupNameLabel = "name"
 )
@@ -65,6 +66,24 @@ var (
 			Name:      "resource_group",
 			Help:      "Counter of token request by every resource group.",
 		}, []string{resourceGroupNameLabel})
+
+	readRequestUnitCost = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Namespace: namespace,
+			Subsystem: ruSubsystem,
+			Name:      "read_request_unit",
+			Help:      "Bucketed histogram of the read request unit cost for all resource groups.",
+			Buckets:   prometheus.ExponentialBuckets(1, 10, 5), // 1 ~ 100000
+		}, []string{resourceGroupNameLabel})
+
+	writeRequestUnitCost = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Namespace: namespace,
+			Subsystem: ruSubsystem,
+			Name:      "write_request_unit",
+			Help:      "Bucketed histogram of the write request unit cost for all resource groups.",
+			Buckets:   prometheus.ExponentialBuckets(3, 10, 5), // 3 ~ 300000
+		}, []string{resourceGroupNameLabel})
 )
 
 var (
@@ -79,4 +98,6 @@ func init() {
 	prometheus.MustRegister(failedRequestCounter)
 	prometheus.MustRegister(tokenRequestDuration)
 	prometheus.MustRegister(resourceGroupTokenRequestCounter)
+	prometheus.MustRegister(readRequestUnitCost)
+	prometheus.MustRegister(writeRequestUnitCost)
 }
