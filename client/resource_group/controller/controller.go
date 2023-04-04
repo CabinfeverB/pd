@@ -397,7 +397,7 @@ func (c *ResourceGroupsController) sendTokenBucketRequests(ctx context.Context, 
 		c.responseDeadlineCh = c.run.responseDeadline.C
 	}
 	go func() {
-		log.Debug("[resource group controller] send token bucket request", zap.Time("now", now), zap.Any("req", req.Requests), zap.String("source", source))
+		log.Info("[resource group controller] send token bucket request", zap.Time("now", now), zap.Any("req", req.Requests), zap.String("source", source))
 		resp, err := c.provider.AcquireTokenBuckets(ctx, req)
 		latency := time.Since(now)
 		if err != nil {
@@ -410,7 +410,7 @@ func (c *ResourceGroupsController) sendTokenBucketRequests(ctx context.Context, 
 		} else {
 			successfulTokenRequestDuration.Observe(latency.Seconds())
 		}
-		log.Debug("[resource group controller] token bucket response", zap.Time("now", time.Now()), zap.Any("resp", resp), zap.String("source", source), zap.Duration("latency", latency))
+		log.Info("[resource group controller] token bucket response", zap.Time("now", time.Now()), zap.Any("resp", resp), zap.String("source", source), zap.Duration("latency", latency))
 		c.tokenResponseChan <- resp
 	}()
 }

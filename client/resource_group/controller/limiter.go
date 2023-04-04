@@ -291,6 +291,16 @@ func resetLowProcess() func(*Limiter) {
 	}
 }
 
+func (lim *Limiter) stringLocked() string {
+	return fmt.Sprintf("[Tokens=%v] [FillRate=%v] [NotifyThreshold=%v] [Burst=%v]", lim.tokens, lim.limit, lim.notifyThreshold, lim.burst)
+}
+
+func (lim *Limiter) String() string {
+	lim.mu.Lock()
+	defer lim.mu.Unlock()
+	return lim.stringLocked()
+}
+
 // Reconfigure modifies all setting for limiter
 func (lim *Limiter) Reconfigure(now time.Time,
 	args tokenBucketReconfigureArgs,
@@ -298,7 +308,7 @@ func (lim *Limiter) Reconfigure(now time.Time,
 ) {
 	lim.mu.Lock()
 	defer lim.mu.Unlock()
-	log.Debug("[resource group controller] before reconfigure", zap.Float64("NewTokens", lim.tokens), zap.Float64("NewRate", float64(lim.limit)), zap.Float64("NotifyThreshold", args.NotifyThreshold), zap.Int64("burst", lim.burst))
+	log.Info("[resource group controller] before reconfigure", zap.Float64("NewTokens", lim.tokens), zap.Float64("NewRate", float64(lim.limit)), zap.Float64("NotifyThreshold", args.NotifyThreshold), zap.Int64("burst", lim.burst))
 	if args.NewBurst < 0 {
 		lim.last = now
 		lim.tokens = args.NewTokens
@@ -314,7 +324,7 @@ func (lim *Limiter) Reconfigure(now time.Time,
 		opt(lim)
 	}
 	lim.maybeNotify()
-	log.Debug("[resource group controller] after reconfigure", zap.Float64("NewTokens", lim.tokens), zap.Float64("NewRate", float64(lim.limit)), zap.Float64("NotifyThreshold", args.NotifyThreshold), zap.Int64("burst", lim.burst))
+	log.Info("[resource group controller] after reconfigure", zap.Float64("NewTokens", lim.tokens), zap.Float64("NewRate", float64(lim.limit)), zap.Float64("NotifyThreshold", args.NotifyThreshold), zap.Int64("burst", lim.burst))
 }
 
 // AvailableTokens decreases the amount of tokens currently available.
@@ -370,6 +380,8 @@ func (lim *Limiter) reserveN(now time.Time, n float64, maxFutureReserve time.Dur
 		lim.maybeNotify()
 	} else {
 		lim.last = last
+		lim.notify()
+		log.Warn("reserveN wait too long", zap.String("limiter", lim.stringLocked()))
 	}
 	return r
 }
