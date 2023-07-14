@@ -1,0 +1,2874 @@
+{
+    "count": 84,
+    "stores": [
+      {
+        "store": {
+          "id": 772236004,
+          "address": "core-tikv-23.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-23.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682650162,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320837559450366,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.255TiB",
+          "used_size": "2.668TiB",
+          "leader_count": 55780,
+          "leader_weight": 1,
+          "leader_score": 55780,
+          "leader_size": 5379892,
+          "region_count": 173882,
+          "region_weight": 1,
+          "region_score": 19327559.94641679,
+          "region_size": 16758407,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T02:49:22Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:17.559450366Z",
+          "uptime": "1852h57m55.559450366s"
+        }
+      },
+      {
+        "store": {
+          "id": 3440021412,
+          "address": "core-tikv-30.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-30.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688111979,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320836053381098,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.324TiB",
+          "used_size": "2.604TiB",
+          "leader_count": 55780,
+          "leader_weight": 1,
+          "leader_score": 55780,
+          "leader_size": 5384521,
+          "region_count": 174611,
+          "region_weight": 1,
+          "region_score": 19327621.029027015,
+          "region_size": 16860765,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-06-30T07:59:39Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:16.053381098Z",
+          "uptime": "335h47m37.053381098s"
+        }
+      },
+      {
+        "store": {
+          "id": 352105509,
+          "address": "core-tikv-5.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-5.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682655726,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320835485331128,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.221TiB",
+          "used_size": "2.695TiB",
+          "leader_count": 55781,
+          "leader_weight": 1,
+          "leader_score": 55781,
+          "leader_size": 5379154,
+          "region_count": 173307,
+          "region_weight": 1,
+          "region_score": 19327554.360042624,
+          "region_size": 16702322,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T04:22:06Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:15.485331128Z",
+          "uptime": "1851h25m9.485331128s"
+        }
+      },
+      {
+        "store": {
+          "id": 772232325,
+          "address": "core-tikv-21.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-21.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682650761,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834404538866,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.239TiB",
+          "used_size": "2.684TiB",
+          "leader_count": 55780,
+          "leader_weight": 1,
+          "leader_score": 55780,
+          "leader_size": 5392013,
+          "region_count": 173085,
+          "region_weight": 1,
+          "region_score": 19327644.61461017,
+          "region_size": 16732831,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T02:59:21Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.404538866Z",
+          "uptime": "1852h47m53.404538866s"
+        }
+      },
+      {
+        "store": {
+          "id": 772233587,
+          "address": "core-tikv-22.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-22.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682650455,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320837019284596,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.257TiB",
+          "used_size": "2.667TiB",
+          "leader_count": 55782,
+          "leader_weight": 1,
+          "leader_score": 55782,
+          "leader_size": 5379139,
+          "region_count": 173668,
+          "region_weight": 1,
+          "region_score": 19327489.93312598,
+          "region_size": 16760778,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T02:54:15Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:17.019284596Z",
+          "uptime": "1852h53m2.019284596s"
+        }
+      },
+      {
+        "store": {
+          "id": 366192593,
+          "address": "core-hotdata-tikv-29.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-29.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684919395,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834532713528,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.696TiB",
+          "used_size": "2.21TiB",
+          "leader_count": 57013,
+          "leader_weight": 1,
+          "leader_score": 57013,
+          "leader_size": 5336689,
+          "region_count": 169353,
+          "region_weight": 1,
+          "region_score": 17874577.38669987,
+          "region_size": 15948962,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T09:09:55Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.532713528Z",
+          "uptime": "1222h37m19.532713528s"
+        }
+      },
+      {
+        "store": {
+          "id": 4581781328,
+          "address": "core-tikv-38.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-38.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688994345,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320836447568159,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.677TiB",
+          "used_size": "2.25TiB",
+          "leader_count": 55776,
+          "leader_weight": 1,
+          "leader_score": 55776,
+          "leader_size": 5367455,
+          "region_count": 148791,
+          "region_weight": 1,
+          "region_score": 16072330.332808312,
+          "region_size": 14329075,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "receiving_snap_count": 1,
+          "start_ts": "2023-07-10T13:05:45Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:16.447568159Z",
+          "uptime": "90h41m31.447568159s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201805,
+          "address": "core-hotdata-tikv-20.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-20.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684923757,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320835379869598,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.511TiB",
+          "used_size": "2.393TiB",
+          "leader_count": 57014,
+          "leader_weight": 1,
+          "leader_score": 57014,
+          "leader_size": 5257934,
+          "region_count": 173856,
+          "region_weight": 1,
+          "region_score": 17874577.59615598,
+          "region_size": 15798021,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T10:22:37Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:15.379869598Z",
+          "uptime": "1221h24m38.379869598s"
+        }
+      },
+      {
+        "store": {
+          "id": 373307218,
+          "address": "core-tikv-10.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-10.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682654138,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320829000308928,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.221TiB",
+          "used_size": "2.698TiB",
+          "leader_count": 55783,
+          "leader_weight": 1,
+          "leader_score": 55783,
+          "leader_size": 5384710,
+          "region_count": 173049,
+          "region_weight": 1,
+          "region_score": 19327672.915564597,
+          "region_size": 16701255,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-04-28T03:55:38Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:09.000308928Z",
+          "uptime": "1851h51m31.000308928s"
+        }
+      },
+      {
+        "store": {
+          "id": 661529738,
+          "address": "core-tikv-20.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-20.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682651069,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320833019280425,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.223TiB",
+          "used_size": "2.7TiB",
+          "leader_count": 55779,
+          "leader_weight": 1,
+          "leader_score": 55779,
+          "leader_size": 5372975,
+          "region_count": 173491,
+          "region_weight": 1,
+          "region_score": 19327499.050806616,
+          "region_size": 16704834,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T03:04:29Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:13.019280425Z",
+          "uptime": "1852h42m44.019280425s"
+        }
+      },
+      {
+        "store": {
+          "id": 4581781327,
+          "address": "core-tikv-37.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-37.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688994345,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320836813684678,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.681TiB",
+          "used_size": "2.246TiB",
+          "leader_count": 55774,
+          "leader_weight": 1,
+          "leader_score": 55774,
+          "leader_size": 5378435,
+          "region_count": 148459,
+          "region_weight": 1,
+          "region_score": 16072510.125782639,
+          "region_size": 14331212,
+          "slow_score": 1,
+          "start_ts": "2023-07-10T13:05:45Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:16.813684678Z",
+          "uptime": "90h41m31.813684678s"
+        }
+      },
+      {
+        "store": {
+          "id": 5,
+          "address": "core-tikv-2.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-2.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682656743,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320832484827791,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.158TiB",
+          "used_size": "2.753TiB",
+          "leader_count": 55783,
+          "leader_weight": 1,
+          "leader_score": 55783,
+          "leader_size": 5366864,
+          "region_count": 172386,
+          "region_weight": 1,
+          "region_score": 19327591.688228335,
+          "region_size": 16583650,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T04:39:03Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:12.484827791Z",
+          "uptime": "1851h8m9.484827791s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201259,
+          "address": "core-hotdata-tikv-10.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-10.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684928657,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834487526234,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.545TiB",
+          "used_size": "2.359TiB",
+          "leader_count": 57014,
+          "leader_weight": 1,
+          "leader_score": 57014,
+          "leader_size": 5244474,
+          "region_count": 173384,
+          "region_weight": 1,
+          "region_score": 17874583.930219263,
+          "region_size": 15828346,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T11:44:17Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.487526234Z",
+          "uptime": "1220h2m57.487526234s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201471,
+          "address": "core-hotdata-tikv-15.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-15.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684926248,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320833756689504,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.749TiB",
+          "used_size": "2.156TiB",
+          "leader_count": 57026,
+          "leader_weight": 1,
+          "leader_score": 57026,
+          "leader_size": 5316345,
+          "region_count": 170942,
+          "region_weight": 1,
+          "region_score": 17874574.52488699,
+          "region_size": 15986423,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T11:04:08Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:13.756689504Z",
+          "uptime": "1220h43m5.756689504s"
+        }
+      },
+      {
+        "store": {
+          "id": 366192594,
+          "address": "core-hotdata-tikv-30.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-30.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684918898,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320831889005459,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.72TiB",
+          "used_size": "2.187TiB",
+          "leader_count": 57016,
+          "leader_weight": 1,
+          "leader_score": 57016,
+          "leader_size": 5312015,
+          "region_count": 170368,
+          "region_weight": 1,
+          "region_score": 17874567.99550262,
+          "region_size": 15965992,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T09:01:38Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:11.889005459Z",
+          "uptime": "1222h45m33.889005459s"
+        }
+      },
+      {
+        "store": {
+          "id": 1125901560,
+          "address": "core-tikv-26.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-26.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682649243,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320835321995564,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.264TiB",
+          "used_size": "2.661TiB",
+          "leader_count": 55778,
+          "leader_weight": 1,
+          "leader_score": 55778,
+          "leader_size": 5380703,
+          "region_count": 173767,
+          "region_weight": 1,
+          "region_score": 19327543.03033653,
+          "region_size": 16772049,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T02:34:03Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:15.321995564Z",
+          "uptime": "1853h13m12.321995564s"
+        }
+      },
+      {
+        "store": {
+          "id": 4583247959,
+          "address": "core-tikv-44.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-44.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1689044662,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320828733655900,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.938TiB",
+          "used_size": "1.99TiB",
+          "leader_count": 55773,
+          "leader_weight": 1,
+          "leader_score": 55773,
+          "leader_size": 5382711,
+          "region_count": 131094,
+          "region_weight": 1,
+          "region_score": 14056842.952546282,
+          "region_size": 12663520,
+          "slow_score": 1,
+          "receiving_snap_count": 1,
+          "start_ts": "2023-07-11T03:04:22Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:08.7336559Z",
+          "uptime": "76h42m46.7336559s"
+        }
+      },
+      {
+        "store": {
+          "id": 352105498,
+          "address": "core-tikv-4.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-4.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682656072,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320831172997524,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.191TiB",
+          "used_size": "2.725TiB",
+          "leader_count": 55782,
+          "leader_weight": 1,
+          "leader_score": 55782,
+          "leader_size": 5394738,
+          "region_count": 172023,
+          "region_weight": 1,
+          "region_score": 19327666.88336734,
+          "region_size": 16646867,
+          "slow_score": 1,
+          "sending_snap_count": 2,
+          "start_ts": "2023-04-28T04:27:52Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:11.172997524Z",
+          "uptime": "1851h19m19.172997524s"
+        }
+      },
+      {
+        "store": {
+          "id": 352105499,
+          "address": "core-tikv-3.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-3.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682656402,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320833272000162,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.185TiB",
+          "used_size": "2.731TiB",
+          "leader_count": 55782,
+          "leader_weight": 1,
+          "leader_score": 55782,
+          "leader_size": 5386811,
+          "region_count": 172031,
+          "region_weight": 1,
+          "region_score": 19327498.035192337,
+          "region_size": 16636921,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T04:33:22Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:13.272000162Z",
+          "uptime": "1851h13m51.272000162s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201874,
+          "address": "core-hotdata-tikv-21.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-21.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684923282,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320836072352036,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.617TiB",
+          "used_size": "2.287TiB",
+          "leader_count": 57027,
+          "leader_weight": 1,
+          "leader_score": 57027,
+          "leader_size": 5318930,
+          "region_count": 171650,
+          "region_weight": 1,
+          "region_score": 17874612.434991613,
+          "region_size": 15889620,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T10:14:42Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:16.072352036Z",
+          "uptime": "1221h32m34.072352036s"
+        }
+      },
+      {
+        "store": {
+          "id": 4581781316,
+          "address": "core-tikv-36.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-36.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688994334,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320831654624962,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.681TiB",
+          "used_size": "2.247TiB",
+          "leader_count": 55774,
+          "leader_weight": 1,
+          "leader_score": 55774,
+          "leader_size": 5382708,
+          "region_count": 148564,
+          "region_weight": 1,
+          "region_score": 16072409.126250323,
+          "region_size": 14331649,
+          "slow_score": 1,
+          "start_ts": "2023-07-10T13:05:34Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:11.654624962Z",
+          "uptime": "90h41m37.654624962s"
+        }
+      },
+      {
+        "store": {
+          "id": 352105486,
+          "address": "core-hotdata-tikv-5.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-5.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684931066,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320828483913400,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.658TiB",
+          "used_size": "2.246TiB",
+          "leader_count": 57014,
+          "leader_weight": 1,
+          "leader_score": 57014,
+          "leader_size": 5329793,
+          "region_count": 170436,
+          "region_weight": 1,
+          "region_score": 17874613.391871907,
+          "region_size": 15921445,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T12:24:26Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:08.4839134Z",
+          "uptime": "1219h22m42.4839134s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201430,
+          "address": "core-hotdata-tikv-12.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-12.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684927690,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320835033238023,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.551TiB",
+          "used_size": "2.354TiB",
+          "leader_count": 57017,
+          "leader_weight": 1,
+          "leader_score": 57017,
+          "leader_size": 5328705,
+          "region_count": 169090,
+          "region_weight": 1,
+          "region_score": 17874648.62904741,
+          "region_size": 15833621,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T11:28:10Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:15.033238023Z",
+          "uptime": "1220h19m5.033238023s"
+        }
+      },
+      {
+        "store": {
+          "id": 3440021413,
+          "address": "core-tikv-29.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-29.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688111979,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834163876396,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.314TiB",
+          "used_size": "2.614TiB",
+          "leader_count": 55776,
+          "leader_weight": 1,
+          "leader_score": 55776,
+          "leader_size": 5382464,
+          "region_count": 174481,
+          "region_weight": 1,
+          "region_score": 19327547.82840886,
+          "region_size": 16847187,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-06-30T07:59:39Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.163876396Z",
+          "uptime": "335h47m35.163876396s"
+        }
+      },
+      {
+        "store": {
+          "id": 406867063,
+          "address": "core-tikv-13.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-13.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682653214,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320828751843242,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.214TiB",
+          "used_size": "2.708TiB",
+          "leader_count": 55780,
+          "leader_weight": 1,
+          "leader_score": 55780,
+          "leader_size": 5388562,
+          "region_count": 172945,
+          "region_weight": 1,
+          "region_score": 19327611.445783373,
+          "region_size": 16689312,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-04-28T03:40:14Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:08.751843242Z",
+          "uptime": "1852h6m54.751843242s"
+        }
+      },
+      {
+        "store": {
+          "id": 4583247961,
+          "address": "core-tikv-42.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-42.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1689044663,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320835327445776,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.939TiB",
+          "used_size": "1.99TiB",
+          "leader_count": 55774,
+          "leader_weight": 1,
+          "leader_score": 55774,
+          "leader_size": 5384123,
+          "region_count": 131103,
+          "region_weight": 1,
+          "region_score": 14042168.377598684,
+          "region_size": 12650570,
+          "slow_score": 1,
+          "receiving_snap_count": 1,
+          "start_ts": "2023-07-11T03:04:23Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:15.327445776Z",
+          "uptime": "76h42m52.327445776s"
+        }
+      },
+      {
+        "store": {
+          "id": 136,
+          "address": "core-hotdata-tikv-0.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-0.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684933459,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834469047221,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.549TiB",
+          "used_size": "2.348TiB",
+          "leader_count": 57024,
+          "leader_weight": 1,
+          "leader_score": 57024,
+          "leader_size": 5298386,
+          "region_count": 169785,
+          "region_weight": 1,
+          "region_score": 17874637.75649639,
+          "region_size": 15831961,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T13:04:19Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.469047221Z",
+          "uptime": "1218h42m55.469047221s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201167,
+          "address": "core-tikv-8.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-8.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682654755,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320830307430647,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.193TiB",
+          "used_size": "2.722TiB",
+          "leader_count": 55783,
+          "leader_weight": 1,
+          "leader_score": 55783,
+          "leader_size": 5363871,
+          "region_count": 173342,
+          "region_weight": 1,
+          "region_score": 19327537.430903133,
+          "region_size": 16651407,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T04:05:55Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:10.307430647Z",
+          "uptime": "1851h41m15.307430647s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201859,
+          "address": "core-hotdata-tikv-25.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-25.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684921355,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320830192021837,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.716TiB",
+          "used_size": "2.188TiB",
+          "leader_count": 57016,
+          "leader_weight": 1,
+          "leader_score": 57016,
+          "leader_size": 5360325,
+          "region_count": 169748,
+          "region_weight": 1,
+          "region_score": 17874641.488591067,
+          "region_size": 15963754,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T09:42:35Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:10.192021837Z",
+          "uptime": "1222h4m35.192021837s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201786,
+          "address": "core-hotdata-tikv-23.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-23.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684922311,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320835918679515,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.639TiB",
+          "used_size": "2.264TiB",
+          "leader_count": 57037,
+          "leader_weight": 1,
+          "leader_score": 57037,
+          "leader_size": 5331498,
+          "region_count": 169942,
+          "region_weight": 1,
+          "region_score": 17874586.47655324,
+          "region_size": 15905722,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-05-24T09:58:31Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:15.918679515Z",
+          "uptime": "1221h48m44.918679515s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201900,
+          "address": "core-hotdata-tikv-24.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-24.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684921810,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320828013289484,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.742TiB",
+          "used_size": "2.163TiB",
+          "leader_count": 57013,
+          "leader_weight": 1,
+          "leader_score": 57013,
+          "leader_size": 5284823,
+          "region_count": 172573,
+          "region_weight": 1,
+          "region_score": 17874548.944604583,
+          "region_size": 15981766,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T09:50:10Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:08.013289484Z",
+          "uptime": "1221h56m58.013289484s"
+        }
+      },
+      {
+        "store": {
+          "id": 408030231,
+          "address": "core-tikv-16.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-16.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682652317,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320836283503762,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.194TiB",
+          "used_size": "2.729TiB",
+          "leader_count": 55781,
+          "leader_weight": 1,
+          "leader_score": 55781,
+          "leader_size": 5391516,
+          "region_count": 172545,
+          "region_weight": 1,
+          "region_score": 19327609.61982091,
+          "region_size": 16652697,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T03:25:17Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:16.283503762Z",
+          "uptime": "1852h21m59.283503762s"
+        }
+      },
+      {
+        "store": {
+          "id": 1125903250,
+          "address": "core-tikv-25.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-25.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682649562,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834023224244,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.245TiB",
+          "used_size": "2.68TiB",
+          "leader_count": 55781,
+          "leader_weight": 1,
+          "leader_score": 55781,
+          "leader_size": 5375235,
+          "region_count": 173784,
+          "region_weight": 1,
+          "region_score": 19327555.15056499,
+          "region_size": 16741279,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T02:39:22Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.023224244Z",
+          "uptime": "1853h7m52.023224244s"
+        }
+      },
+      {
+        "store": {
+          "id": 3440021419,
+          "address": "core-tikv-32.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-32.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688111987,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320837178088871,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.319TiB",
+          "used_size": "2.608TiB",
+          "leader_count": 55781,
+          "leader_weight": 1,
+          "leader_score": 55781,
+          "leader_size": 5397434,
+          "region_count": 174260,
+          "region_weight": 1,
+          "region_score": 19327677.514353443,
+          "region_size": 16855008,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-06-30T07:59:47Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:17.178088871Z",
+          "uptime": "335h47m30.178088871s"
+        }
+      },
+      {
+        "store": {
+          "id": 355104206,
+          "address": "core-hotdata-tikv-9.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-9.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684929138,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320837480913379,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.716TiB",
+          "used_size": "2.187TiB",
+          "leader_count": 57011,
+          "leader_weight": 1,
+          "leader_score": 57011,
+          "leader_size": 5298804,
+          "region_count": 170781,
+          "region_weight": 1,
+          "region_score": 17874632.673554525,
+          "region_size": 15964321,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T11:52:18Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:17.480913379Z",
+          "uptime": "1219h54m59.480913379s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201287,
+          "address": "core-hotdata-tikv-11.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-11.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684928140,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834947262978,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.672TiB",
+          "used_size": "2.232TiB",
+          "leader_count": 57025,
+          "leader_weight": 1,
+          "leader_score": 57025,
+          "leader_size": 5353736,
+          "region_count": 168926,
+          "region_weight": 1,
+          "region_score": 17874580.631661654,
+          "region_size": 15930651,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T11:35:40Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.947262978Z",
+          "uptime": "1220h11m34.947262978s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201666,
+          "address": "core-hotdata-tikv-14.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-14.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684926748,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320832105413150,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.687TiB",
+          "used_size": "2.219TiB",
+          "leader_count": 57020,
+          "leader_weight": 1,
+          "leader_score": 57020,
+          "leader_size": 5309188,
+          "region_count": 170701,
+          "region_weight": 1,
+          "region_score": 17874587.684284322,
+          "region_size": 15942278,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T11:12:28Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:12.10541315Z",
+          "uptime": "1220h34m44.10541315s"
+        }
+      },
+      {
+        "store": {
+          "id": 3440021426,
+          "address": "core-tikv-34.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-34.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688111989,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320827932508596,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.317TiB",
+          "used_size": "2.61TiB",
+          "leader_count": 55780,
+          "leader_weight": 1,
+          "leader_score": 55780,
+          "leader_size": 5379814,
+          "region_count": 174608,
+          "region_weight": 1,
+          "region_score": 19327628.290740915,
+          "region_size": 16851868,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-06-30T07:59:49Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:07.932508596Z",
+          "uptime": "335h47m18.932508596s"
+        }
+      },
+      {
+        "store": {
+          "id": 4583247962,
+          "address": "core-tikv-43.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-43.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1689044663,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320833505458148,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.946TiB",
+          "used_size": "1.983TiB",
+          "leader_count": 55773,
+          "leader_weight": 1,
+          "leader_score": 55773,
+          "leader_size": 5371901,
+          "region_count": 131182,
+          "region_weight": 1,
+          "region_score": 14039844.658355951,
+          "region_size": 12651495,
+          "slow_score": 1,
+          "start_ts": "2023-07-11T03:04:23Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:13.505458148Z",
+          "uptime": "76h42m50.505458148s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201080,
+          "address": "core-tikv-6.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-6.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682655403,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320832053445133,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.189TiB",
+          "used_size": "2.728TiB",
+          "leader_count": 55780,
+          "leader_weight": 1,
+          "leader_score": 55780,
+          "leader_size": 5367053,
+          "region_count": 173464,
+          "region_weight": 1,
+          "region_score": 19327641.636660393,
+          "region_size": 16644428,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T04:16:43Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:12.053445133Z",
+          "uptime": "1851h30m29.053445133s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201795,
+          "address": "core-hotdata-tikv-22.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-22.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684922782,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320830387687392,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.618TiB",
+          "used_size": "2.285TiB",
+          "leader_count": 57020,
+          "leader_weight": 1,
+          "leader_score": 57020,
+          "leader_size": 5317533,
+          "region_count": 170330,
+          "region_weight": 1,
+          "region_score": 17874580.097651593,
+          "region_size": 15890196,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T10:06:22Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:10.387687392Z",
+          "uptime": "1221h40m48.387687392s"
+        }
+      },
+      {
+        "store": {
+          "id": 4581909145,
+          "address": "core-tikv-39.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-39.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1689000536,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320833572749953,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.679TiB",
+          "used_size": "2.248TiB",
+          "leader_count": 55774,
+          "leader_weight": 1,
+          "leader_score": 55774,
+          "leader_size": 5369796,
+          "region_count": 148652,
+          "region_weight": 1,
+          "region_score": 16072363.627378419,
+          "region_size": 14330150,
+          "slow_score": 1,
+          "receiving_snap_count": 1,
+          "start_ts": "2023-07-10T14:48:56Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:13.572749953Z",
+          "uptime": "88h58m17.572749953s"
+        }
+      },
+      {
+        "store": {
+          "id": 406867065,
+          "address": "core-tikv-14.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-14.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682652912,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320835825089092,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.245TiB",
+          "used_size": "2.677TiB",
+          "leader_count": 55778,
+          "leader_weight": 1,
+          "leader_score": 55778,
+          "leader_size": 5406035,
+          "region_count": 172780,
+          "region_weight": 1,
+          "region_score": 19327531.88195725,
+          "region_size": 16742456,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T03:35:12Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:15.825089092Z",
+          "uptime": "1852h12m3.825089092s"
+        }
+      },
+      {
+        "store": {
+          "id": 661529734,
+          "address": "core-tikv-18.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-18.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682651705,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320827984920661,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.227TiB",
+          "used_size": "2.696TiB",
+          "leader_count": 55778,
+          "leader_weight": 1,
+          "leader_score": 55778,
+          "leader_size": 5387876,
+          "region_count": 173043,
+          "region_weight": 1,
+          "region_score": 19327683.271021314,
+          "region_size": 16711921,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-04-28T03:15:05Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:07.984920661Z",
+          "uptime": "1852h32m2.984920661s"
+        }
+      },
+      {
+        "store": {
+          "id": 139,
+          "address": "core-hotdata-tikv-2.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-2.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684932500,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320833673342462,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.615TiB",
+          "used_size": "2.283TiB",
+          "leader_count": 57019,
+          "leader_weight": 1,
+          "leader_score": 57019,
+          "leader_size": 5315107,
+          "region_count": 170136,
+          "region_weight": 1,
+          "region_score": 17874614.785851948,
+          "region_size": 15887963,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T12:48:20Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:13.673342462Z",
+          "uptime": "1218h58m53.673342462s"
+        }
+      },
+      {
+        "store": {
+          "id": 366192393,
+          "address": "core-hotdata-tikv-26.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-26.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684920868,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320829451849867,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.663TiB",
+          "used_size": "2.243TiB",
+          "leader_count": 57023,
+          "leader_weight": 1,
+          "leader_score": 57023,
+          "leader_size": 5264068,
+          "region_count": 172256,
+          "region_weight": 1,
+          "region_score": 17874567.05409781,
+          "region_size": 15925126,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T09:34:28Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:09.451849867Z",
+          "uptime": "1222h12m41.451849867s"
+        }
+      },
+      {
+        "store": {
+          "id": 366192591,
+          "address": "core-hotdata-tikv-28.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-28.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684919894,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320833101141100,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.456TiB",
+          "used_size": "2.447TiB",
+          "leader_count": 57014,
+          "leader_weight": 1,
+          "leader_score": 57014,
+          "leader_size": 5302919,
+          "region_count": 171413,
+          "region_weight": 1,
+          "region_score": 17874623.48084491,
+          "region_size": 15744183,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T09:18:14Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:13.1011411Z",
+          "uptime": "1222h28m59.1011411s"
+        }
+      },
+      {
+        "store": {
+          "id": 3435018443,
+          "address": "core-hotdata-tikv-36.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "state": 1,
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-36.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684915987,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320837240073015,
+          "node_state": 2,
+          "state_name": "Offline"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.886TiB",
+          "used_size": "2.031TiB",
+          "leader_count": 52707,
+          "leader_weight": 1,
+          "leader_score": 52707,
+          "leader_size": 4921227,
+          "region_count": 158320,
+          "region_weight": 1,
+          "region_score": 16492449.248673618,
+          "region_size": 14831480,
+          "slow_score": 1,
+          "sending_snap_count": 2,
+          "start_ts": "2023-05-24T08:13:07Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:17.240073015Z",
+          "uptime": "1223h34m10.240073015s"
+        }
+      },
+      {
+        "store": {
+          "id": 3440021411,
+          "address": "core-tikv-31.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-31.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688111979,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834419027154,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.307TiB",
+          "used_size": "2.62TiB",
+          "leader_count": 55782,
+          "leader_weight": 1,
+          "leader_score": 55782,
+          "leader_size": 5392403,
+          "region_count": 174150,
+          "region_weight": 1,
+          "region_score": 19327567.720347263,
+          "region_size": 16837605,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-06-30T07:59:39Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.419027154Z",
+          "uptime": "335h47m35.419027154s"
+        }
+      },
+      {
+        "store": {
+          "id": 3440021427,
+          "address": "core-tikv-35.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-35.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688111990,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320829483979472,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.314TiB",
+          "used_size": "2.613TiB",
+          "leader_count": 55783,
+          "leader_weight": 1,
+          "leader_score": 55783,
+          "leader_size": 5384461,
+          "region_count": 174401,
+          "region_weight": 1,
+          "region_score": 19327675.92349225,
+          "region_size": 16847401,
+          "slow_score": 1,
+          "start_ts": "2023-06-30T07:59:50Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:09.483979472Z",
+          "uptime": "335h47m19.483979472s"
+        }
+      },
+      {
+        "store": {
+          "id": 1,
+          "address": "core-tikv-1.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-1.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682657052,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320830384371445,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.17TiB",
+          "used_size": "2.739TiB",
+          "leader_count": 55783,
+          "leader_weight": 1,
+          "leader_score": 55783,
+          "leader_size": 5352066,
+          "region_count": 173050,
+          "region_weight": 1,
+          "region_score": 19327550.89466184,
+          "region_size": 16606919,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-04-28T04:44:12Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:10.384371445Z",
+          "uptime": "1851h2m58.384371445s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201483,
+          "address": "core-hotdata-tikv-17.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-17.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684925236,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320832896909978,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.73TiB",
+          "used_size": "2.175TiB",
+          "leader_count": 57016,
+          "leader_weight": 1,
+          "leader_score": 57016,
+          "leader_size": 5254420,
+          "region_count": 173742,
+          "region_weight": 1,
+          "region_score": 17874604.17756452,
+          "region_size": 15973481,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T10:47:16Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:12.896909978Z",
+          "uptime": "1220h59m56.896909978s"
+        }
+      },
+      {
+        "store": {
+          "id": 373307211,
+          "address": "core-tikv-9.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-9.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682654445,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320831378344852,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.238TiB",
+          "used_size": "2.682TiB",
+          "leader_count": 55779,
+          "leader_weight": 1,
+          "leader_score": 55779,
+          "leader_size": 5375524,
+          "region_count": 174079,
+          "region_weight": 1,
+          "region_score": 19327663.897179205,
+          "region_size": 16731072,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-04-28T04:00:45Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:11.378344852Z",
+          "uptime": "1851h46m26.378344852s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201449,
+          "address": "core-hotdata-tikv-16.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-16.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684925726,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320831955527565,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.687TiB",
+          "used_size": "2.218TiB",
+          "leader_count": 57030,
+          "leader_weight": 1,
+          "leader_score": 57030,
+          "leader_size": 5330742,
+          "region_count": 171009,
+          "region_weight": 1,
+          "region_score": 17874565.34091028,
+          "region_size": 15942100,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T10:55:26Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:11.955527565Z",
+          "uptime": "1220h51m45.955527565s"
+        }
+      },
+      {
+        "store": {
+          "id": 366192955,
+          "address": "core-hotdata-tikv-34.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-34.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684916966,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834113748798,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.704TiB",
+          "used_size": "2.202TiB",
+          "leader_count": 57012,
+          "leader_weight": 1,
+          "leader_score": 57012,
+          "leader_size": 5316039,
+          "region_count": 169830,
+          "region_weight": 1,
+          "region_score": 17874613.04249641,
+          "region_size": 15954784,
+          "slow_score": 1,
+          "receiving_snap_count": 1,
+          "start_ts": "2023-05-24T08:29:26Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.113748798Z",
+          "uptime": "1223h17m48.113748798s"
+        }
+      },
+      {
+        "store": {
+          "id": 661529737,
+          "address": "core-tikv-19.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-19.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682651394,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320833401805590,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.232TiB",
+          "used_size": "2.691TiB",
+          "leader_count": 55781,
+          "leader_weight": 1,
+          "leader_score": 55781,
+          "leader_size": 5367228,
+          "region_count": 173825,
+          "region_weight": 1,
+          "region_score": 19325715.48878657,
+          "region_size": 16716779,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T03:09:54Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:13.40180559Z",
+          "uptime": "1852h37m19.40180559s"
+        }
+      },
+      {
+        "store": {
+          "id": 4,
+          "address": "core-tikv-0.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-0.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682657377,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834907707005,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.186TiB",
+          "used_size": "2.726TiB",
+          "leader_count": 55783,
+          "leader_weight": 1,
+          "leader_score": 55783,
+          "leader_size": 5391965,
+          "region_count": 172038,
+          "region_weight": 1,
+          "region_score": 19327549.579191748,
+          "region_size": 16637021,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T04:49:37Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.907707005Z",
+          "uptime": "1850h57m37.907707005s"
+        }
+      },
+      {
+        "store": {
+          "id": 137,
+          "address": "core-hotdata-tikv-1.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-1.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684932968,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834072341801,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.689TiB",
+          "used_size": "2.212TiB",
+          "leader_count": 57022,
+          "leader_weight": 1,
+          "leader_score": 57022,
+          "leader_size": 5236917,
+          "region_count": 173673,
+          "region_weight": 1,
+          "region_score": 17874622.27374714,
+          "region_size": 15944102,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T12:56:08Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.072341801Z",
+          "uptime": "1218h51m6.072341801s"
+        }
+      },
+      {
+        "store": {
+          "id": 355104163,
+          "address": "core-hotdata-tikv-8.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-8.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684929586,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320831584587906,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.619TiB",
+          "used_size": "2.285TiB",
+          "leader_count": 57015,
+          "leader_weight": 1,
+          "leader_score": 57015,
+          "leader_size": 5237733,
+          "region_count": 173118,
+          "region_weight": 1,
+          "region_score": 17874595.23198271,
+          "region_size": 15890989,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T11:59:46Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:11.584587906Z",
+          "uptime": "1219h47m25.584587906s"
+        }
+      },
+      {
+        "store": {
+          "id": 1125901994,
+          "address": "core-tikv-24.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-24.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682649862,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320828403561800,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.253TiB",
+          "used_size": "2.671TiB",
+          "leader_count": 55778,
+          "leader_weight": 1,
+          "leader_score": 55778,
+          "leader_size": 5364873,
+          "region_count": 174125,
+          "region_weight": 1,
+          "region_score": 19327575.969116077,
+          "region_size": 16755959,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T02:44:22Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:08.4035618Z",
+          "uptime": "1853h2m46.4035618s"
+        }
+      },
+      {
+        "store": {
+          "id": 352105485,
+          "address": "core-hotdata-tikv-6.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-6.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684930558,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834153735653,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.694TiB",
+          "used_size": "2.21TiB",
+          "leader_count": 57015,
+          "leader_weight": 1,
+          "leader_score": 57015,
+          "leader_size": 5316673,
+          "region_count": 170964,
+          "region_weight": 1,
+          "region_score": 17874590.724704437,
+          "region_size": 15947871,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T12:15:58Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.153735653Z",
+          "uptime": "1219h31m16.153735653s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201539,
+          "address": "core-hotdata-tikv-18.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-18.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684924756,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320828388014356,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.629TiB",
+          "used_size": "2.275TiB",
+          "leader_count": 57016,
+          "leader_weight": 1,
+          "leader_score": 57016,
+          "leader_size": 5285175,
+          "region_count": 170654,
+          "region_weight": 1,
+          "region_score": 17874574.100025877,
+          "region_size": 15898416,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T10:39:16Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:08.388014356Z",
+          "uptime": "1221h7m52.388014356s"
+        }
+      },
+      {
+        "store": {
+          "id": 373307229,
+          "address": "core-tikv-11.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-11.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682653820,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320829531701019,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.212TiB",
+          "used_size": "2.707TiB",
+          "leader_count": 55780,
+          "leader_weight": 1,
+          "leader_score": 55780,
+          "leader_size": 5386981,
+          "region_count": 173022,
+          "region_weight": 1,
+          "region_score": 19327526.59523691,
+          "region_size": 16686028,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T03:50:20Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:09.531701019Z",
+          "uptime": "1851h56m49.531701019s"
+        }
+      },
+      {
+        "store": {
+          "id": 3435018445,
+          "address": "core-hotdata-tikv-38.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "state": 1,
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-38.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684915201,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320832599171470,
+          "node_state": 2,
+          "state_name": "Offline"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.864TiB",
+          "used_size": "2.053TiB",
+          "leader_count": 52912,
+          "leader_weight": 1,
+          "leader_score": 52912,
+          "leader_size": 4921187,
+          "region_count": 159961,
+          "region_weight": 1,
+          "region_score": 16547300.656240152,
+          "region_size": 14869507,
+          "slow_score": 1,
+          "sending_snap_count": 2,
+          "start_ts": "2023-05-24T08:00:01Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:12.59917147Z",
+          "uptime": "1223h47m11.59917147s"
+        }
+      },
+      {
+        "store": {
+          "id": 3440021409,
+          "address": "core-tikv-28.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-28.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688111970,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320835080453713,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.314TiB",
+          "used_size": "2.614TiB",
+          "leader_count": 55779,
+          "leader_weight": 1,
+          "leader_score": 55779,
+          "leader_size": 5388506,
+          "region_count": 174289,
+          "region_weight": 1,
+          "region_score": 19327532.184482776,
+          "region_size": 16846826,
+          "slow_score": 1,
+          "start_ts": "2023-06-30T07:59:30Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:15.080453713Z",
+          "uptime": "335h47m45.080453713s"
+        }
+      },
+      {
+        "store": {
+          "id": 355104165,
+          "address": "core-hotdata-tikv-7.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-7.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684930083,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320831263449685,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.664TiB",
+          "used_size": "2.24TiB",
+          "leader_count": 57019,
+          "leader_weight": 1,
+          "leader_score": 57019,
+          "leader_size": 5353326,
+          "region_count": 169156,
+          "region_weight": 1,
+          "region_score": 17874652.9614123,
+          "region_size": 15926054,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T12:08:03Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:11.263449685Z",
+          "uptime": "1219h39m8.263449685s"
+        }
+      },
+      {
+        "store": {
+          "id": 366192592,
+          "address": "core-hotdata-tikv-32.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-32.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684917947,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320836620459988,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.679TiB",
+          "used_size": "2.225TiB",
+          "leader_count": 57013,
+          "leader_weight": 1,
+          "leader_score": 57013,
+          "leader_size": 5300729,
+          "region_count": 171249,
+          "region_weight": 1,
+          "region_score": 17874625.068587076,
+          "region_size": 15937335,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T08:45:47Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:16.620459988Z",
+          "uptime": "1223h1m29.620459988s"
+        }
+      },
+      {
+        "store": {
+          "id": 408030230,
+          "address": "core-tikv-15.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-15.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682652614,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834070415930,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.217TiB",
+          "used_size": "2.705TiB",
+          "leader_count": 55782,
+          "leader_weight": 1,
+          "leader_score": 55782,
+          "leader_size": 5347489,
+          "region_count": 174093,
+          "region_weight": 1,
+          "region_score": 19327635.432174116,
+          "region_size": 16694846,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T03:30:14Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.07041593Z",
+          "uptime": "1852h17m0.07041593s"
+        }
+      },
+      {
+        "store": {
+          "id": 366192953,
+          "address": "core-hotdata-tikv-35.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-35.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684916485,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320830352628516,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.682TiB",
+          "used_size": "2.224TiB",
+          "leader_count": 57017,
+          "leader_weight": 1,
+          "leader_score": 57017,
+          "leader_size": 5280409,
+          "region_count": 170940,
+          "region_weight": 1,
+          "region_score": 17874612.229529113,
+          "region_size": 15937165,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-05-24T08:21:25Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:10.352628516Z",
+          "uptime": "1223h25m45.352628516s"
+        }
+      },
+      {
+        "store": {
+          "id": 3435018444,
+          "address": "core-hotdata-tikv-37.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "state": 1,
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-37.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684915586,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320830667198047,
+          "node_state": 2,
+          "state_name": "Offline"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.881TiB",
+          "used_size": "2.039TiB",
+          "leader_count": 52752,
+          "leader_weight": 1,
+          "leader_score": 52752,
+          "leader_size": 4940397,
+          "region_count": 158578,
+          "region_weight": 1,
+          "region_score": 16574100.296596354,
+          "region_size": 14899091,
+          "slow_score": 1,
+          "sending_snap_count": 2,
+          "start_ts": "2023-05-24T08:06:26Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:10.667198047Z",
+          "uptime": "1223h40m44.667198047s"
+        }
+      },
+      {
+        "store": {
+          "id": 3440021410,
+          "address": "core-tikv-27.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-27.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688111972,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834360599314,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.309TiB",
+          "used_size": "2.618TiB",
+          "leader_count": 55778,
+          "leader_weight": 1,
+          "leader_score": 55778,
+          "leader_size": 5384815,
+          "region_count": 174358,
+          "region_weight": 1,
+          "region_score": 19327572.473712526,
+          "region_size": 16840778,
+          "slow_score": 1,
+          "start_ts": "2023-06-30T07:59:32Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.360599314Z",
+          "uptime": "335h47m42.360599314s"
+        }
+      },
+      {
+        "store": {
+          "id": 3440021422,
+          "address": "core-tikv-33.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-33.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1688111988,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320829010206200,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.319TiB",
+          "used_size": "2.608TiB",
+          "leader_count": 55779,
+          "leader_weight": 1,
+          "leader_score": 55779,
+          "leader_size": 5378714,
+          "region_count": 174472,
+          "region_weight": 1,
+          "region_score": 19327548.931823485,
+          "region_size": 16854711,
+          "slow_score": 1,
+          "start_ts": "2023-06-30T07:59:48Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:09.0102062Z",
+          "uptime": "335h47m21.0102062s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201143,
+          "address": "core-tikv-7.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-7.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682655080,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834999480886,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.193TiB",
+          "used_size": "2.724TiB",
+          "leader_count": 55777,
+          "leader_weight": 1,
+          "leader_score": 55777,
+          "leader_size": 5374516,
+          "region_count": 172808,
+          "region_weight": 1,
+          "region_score": 19327513.565091584,
+          "region_size": 16652865,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T04:11:20Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.999480886Z",
+          "uptime": "1851h35m54.999480886s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201564,
+          "address": "core-hotdata-tikv-13.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-13.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684927217,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320833610533004,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.617TiB",
+          "used_size": "2.289TiB",
+          "leader_count": 57013,
+          "leader_weight": 1,
+          "leader_score": 57013,
+          "leader_size": 5272416,
+          "region_count": 172272,
+          "region_weight": 1,
+          "region_score": 17874620.81658762,
+          "region_size": 15889153,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T11:20:17Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:13.610533004Z",
+          "uptime": "1220h26m56.610533004s"
+        }
+      },
+      {
+        "store": {
+          "id": 357201590,
+          "address": "core-hotdata-tikv-19.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-19.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684924261,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320828056899377,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.719TiB",
+          "used_size": "2.185TiB",
+          "leader_count": 57022,
+          "leader_weight": 1,
+          "leader_score": 57022,
+          "leader_size": 5355562,
+          "region_count": 168786,
+          "region_weight": 1,
+          "region_score": 17870850.487500098,
+          "region_size": 15960987,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-05-24T10:31:01Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:08.056899377Z",
+          "uptime": "1221h16m7.056899377s"
+        }
+      },
+      {
+        "store": {
+          "id": 4581909140,
+          "address": "core-tikv-41.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-41.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1689000535,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320833398345269,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.683TiB",
+          "used_size": "2.245TiB",
+          "leader_count": 55774,
+          "leader_weight": 1,
+          "leader_score": 55774,
+          "leader_size": 5370323,
+          "region_count": 148668,
+          "region_weight": 1,
+          "region_score": 16072245.377271095,
+          "region_size": 14332302,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "receiving_snap_count": 1,
+          "start_ts": "2023-07-10T14:48:55Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:13.398345269Z",
+          "uptime": "88h58m18.398345269s"
+        }
+      },
+      {
+        "store": {
+          "id": 4581909141,
+          "address": "core-tikv-40.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-40.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1689000535,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320828647231409,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.682TiB",
+          "used_size": "2.246TiB",
+          "leader_count": 55774,
+          "leader_weight": 1,
+          "leader_score": 55774,
+          "leader_size": 5372551,
+          "region_count": 148591,
+          "region_weight": 1,
+          "region_score": 16072148.166026957,
+          "region_size": 14331740,
+          "slow_score": 1,
+          "start_ts": "2023-07-10T14:48:55Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:08.647231409Z",
+          "uptime": "88h58m13.647231409s"
+        }
+      },
+      {
+        "store": {
+          "id": 366192645,
+          "address": "core-hotdata-tikv-33.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-33.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684917472,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320833054704525,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.468TiB",
+          "used_size": "2.437TiB",
+          "leader_count": 57017,
+          "leader_weight": 1,
+          "leader_score": 57017,
+          "leader_size": 5316488,
+          "region_count": 171323,
+          "region_weight": 1,
+          "region_score": 17874681.861704547,
+          "region_size": 15756818,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T08:37:52Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:13.054704525Z",
+          "uptime": "1223h9m21.054704525s"
+        }
+      },
+      {
+        "store": {
+          "id": 138,
+          "address": "core-hotdata-tikv-3.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-3.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684932015,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320834368227848,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.554TiB",
+          "used_size": "2.346TiB",
+          "leader_count": 57018,
+          "leader_weight": 1,
+          "leader_score": 57018,
+          "leader_size": 5299766,
+          "region_count": 169882,
+          "region_weight": 1,
+          "region_score": 17874568.176332075,
+          "region_size": 15836425,
+          "slow_score": 1,
+          "sending_snap_count": 2,
+          "start_ts": "2023-05-24T12:40:15Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:14.368227848Z",
+          "uptime": "1219h6m59.368227848s"
+        }
+      },
+      {
+        "store": {
+          "id": 352105484,
+          "address": "core-hotdata-tikv-4.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-4.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684931537,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320835314851699,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.564TiB",
+          "used_size": "2.338TiB",
+          "leader_count": 57011,
+          "leader_weight": 1,
+          "leader_score": 57011,
+          "leader_size": 5339573,
+          "region_count": 170560,
+          "region_weight": 1,
+          "region_score": 17874577.096402273,
+          "region_size": 15844561,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T12:32:17Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:15.314851699Z",
+          "uptime": "1219h14m58.314851699s"
+        }
+      },
+      {
+        "store": {
+          "id": 366192485,
+          "address": "core-hotdata-tikv-27.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-27.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684920381,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320830388211608,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.722TiB",
+          "used_size": "2.184TiB",
+          "leader_count": 57011,
+          "leader_weight": 1,
+          "leader_score": 57011,
+          "leader_size": 5259642,
+          "region_count": 173710,
+          "region_weight": 1,
+          "region_score": 17874635.608310968,
+          "region_size": 15967299,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T09:26:21Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:10.388211608Z",
+          "uptime": "1222h20m49.388211608s"
+        }
+      },
+      {
+        "store": {
+          "id": 366192595,
+          "address": "core-hotdata-tikv-31.core-hotdata-tikv-peer.tidb-cluster.svc:20160",
+          "labels": [
+            {
+              "key": "storedata",
+              "value": "hotdata"
+            }
+          ],
+          "version": "6.1.2",
+          "status_address": "core-hotdata-tikv-31.core-hotdata-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1684918427,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320829312167438,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.712TiB",
+          "used_size": "2.191TiB",
+          "leader_count": 57027,
+          "leader_weight": 1,
+          "leader_score": 57027,
+          "leader_size": 5342181,
+          "region_count": 169943,
+          "region_weight": 1,
+          "region_score": 17874626.07467772,
+          "region_size": 15960485,
+          "slow_score": 1,
+          "start_ts": "2023-05-24T08:53:47Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:09.312167438Z",
+          "uptime": "1222h53m22.312167438s"
+        }
+      },
+      {
+        "store": {
+          "id": 406867064,
+          "address": "core-tikv-12.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-12.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682653513,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320828293602049,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.247TiB",
+          "used_size": "2.675TiB",
+          "leader_count": 55779,
+          "leader_weight": 1,
+          "leader_score": 55779,
+          "leader_size": 5413599,
+          "region_count": 172923,
+          "region_weight": 1,
+          "region_score": 19327706.390285943,
+          "region_size": 16746375,
+          "slow_score": 1,
+          "start_ts": "2023-04-28T03:45:13Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:08.293602049Z",
+          "uptime": "1852h1m55.293602049s"
+        }
+      },
+      {
+        "store": {
+          "id": 408030233,
+          "address": "core-tikv-17.core-tikv-peer.tidb-cluster.svc:20160",
+          "version": "6.1.2",
+          "status_address": "core-tikv-17.core-tikv-peer.tidb-cluster.svc:20180",
+          "git_hash": "cbdd34e96961a0be2adff9db050b8d50b13e5b0d",
+          "start_timestamp": 1682652016,
+          "deploy_path": "/",
+          "last_heartbeat": 1689320832427875844,
+          "node_state": 1,
+          "state_name": "Up"
+        },
+        "status": {
+          "capacity": "3.968TiB",
+          "available": "1.22TiB",
+          "used_size": "2.703TiB",
+          "leader_count": 55783,
+          "leader_weight": 1,
+          "leader_score": 55783,
+          "leader_size": 5393221,
+          "region_count": 172903,
+          "region_weight": 1,
+          "region_score": 19327551.768769912,
+          "region_size": 16699448,
+          "slow_score": 1,
+          "sending_snap_count": 1,
+          "start_ts": "2023-04-28T03:20:16Z",
+          "last_heartbeat_ts": "2023-07-14T07:47:12.427875844Z",
+          "uptime": "1852h26m56.427875844s"
+        }
+      }
+    ]
+  }
+  
