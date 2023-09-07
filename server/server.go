@@ -304,6 +304,7 @@ func CreateServer(ctx context.Context, cfg *config.Config, services []string, le
 		grpcServer := &GrpcServer{
 			Server:  s,
 			limiter: bbr.NewLimiter(bbr.WithCPUThreshold(0)),
+			t:       time.Now(),
 		}
 		pdpb.RegisterPDServer(gs, grpcServer)
 		keyspacepb.RegisterKeyspaceServer(gs, &KeyspaceServer{GrpcServer: grpcServer})

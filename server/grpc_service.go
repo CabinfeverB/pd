@@ -79,6 +79,7 @@ type GrpcServer struct {
 	*Server
 	concurrentTSOProxyStreamings atomic.Int32
 	limiter                      ratelimit.Limiter
+	t                            time.Time
 }
 
 type request interface {
@@ -946,6 +947,11 @@ func (s *GrpcServer) StoreHeartbeat(ctx context.Context, request *pdpb.StoreHear
 		return nil, errors.Errorf("invalid store heartbeat command, but %v", request)
 	}
 	done, err2 := s.limiter.Allow()
+	failpoint.Inject("SlowStoreHeartbeat", func(val failpoint.Value) {
+		d := val.(int)
+		de := time.Duration(time.Since(s.t) / 120.0)
+		time.Sleep(time.Duration(d)*time.Second + de)
+	})
 	rc := s.GetRaftCluster()
 	if rc == nil {
 		return &pdpb.StoreHeartbeatResponse{Header: s.notBootstrappedHeader()}, nil
