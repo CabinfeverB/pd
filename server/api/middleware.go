@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/pingcap/failpoint"
+	"github.com/pingcap/log"
 	"github.com/tikv/pd/pkg/audit"
 	"github.com/tikv/pd/pkg/errs"
 	"github.com/tikv/pd/pkg/utils/requestutil"
@@ -27,6 +28,7 @@ import (
 	"github.com/tikv/pd/server/cluster"
 	"github.com/unrolled/render"
 	"github.com/urfave/negroni"
+	"go.uber.org/zap"
 )
 
 // serviceMiddlewareBuilder is used to build service middleware for HTTP api
@@ -173,6 +175,10 @@ func (s *rateLimitMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request, 
 	requestInfo, ok := requestutil.RequestInfoFrom(r.Context())
 	if !ok {
 		requestInfo = requestutil.GetRequestInfo(r)
+	}
+	if !s.svr.Allow(requestInfo.ServiceLabel) {
+		log.Info("QQQQQQ", zap.String("ServiceLabel", requestInfo.ServiceLabel))
+		http.Error(w, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
 	}
 
 	// There is no need to check whether rateLimiter is nil. CreateServer ensures that it is created

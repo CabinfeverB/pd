@@ -23,11 +23,13 @@ import (
 	"sort"
 	"strings"
 	"sync/atomic"
+	"time"
 	"unsafe"
 
 	"github.com/docker/go-units"
 	"github.com/gogo/protobuf/proto"
 	"github.com/pingcap/errors"
+	"github.com/pingcap/failpoint"
 	"github.com/pingcap/kvproto/pkg/metapb"
 	"github.com/pingcap/kvproto/pkg/pdpb"
 	"github.com/pingcap/kvproto/pkg/replication_modepb"
@@ -1178,6 +1180,10 @@ func SortedPeersStatsEqual(peersA, peersB []*pdpb.PeerStats) bool {
 func (r *RegionsInfo) GetRegionByKey(regionKey []byte) *RegionInfo {
 	r.t.RLock()
 	defer r.t.RUnlock()
+	failpoint.Inject("SlowGetRegion", func(val failpoint.Value) {
+		d := val.(int)
+		time.Sleep(time.Duration(d) * time.Second)
+	})
 	region := r.tree.search(regionKey)
 	if region == nil {
 		return nil

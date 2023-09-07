@@ -72,8 +72,9 @@ func createIndentRender() *render.Render {
 }
 
 func getFunctionName(f interface{}) string {
-	strs := strings.Split(runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name(), ".")
-	return strings.Split(strs[len(strs)-1], "-")[0]
+	return strings.Split(runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name(), "-")[0]
+	//strs := strings.Split(runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name(), ".")
+	// return strings.Split(strs[len(strs)-1], "-")[0]
 }
 
 // The returned function is used as a lazy router to avoid the data race problem.
@@ -337,10 +338,12 @@ func createRouter(prefix string, svr *server.Server) *mux.Router {
 	registerFunc(apiRouter, "/debug/pprof/trace", pprof.Trace)
 	registerFunc(apiRouter, "/debug/pprof/symbol", pprof.Symbol)
 	registerFunc(apiRouter, "/debug/pprof/heap", pprofHandler.PProfHeap)
+	registerFunc(apiRouter, "/debug/ppprof/heap", pprofHandler.PPProfHeap)
 	registerFunc(apiRouter, "/debug/pprof/mutex", pprofHandler.PProfMutex)
 	registerFunc(apiRouter, "/debug/pprof/allocs", pprofHandler.PProfAllocs)
 	registerFunc(apiRouter, "/debug/pprof/block", pprofHandler.PProfBlock)
 	registerFunc(apiRouter, "/debug/pprof/goroutine", pprofHandler.PProfGoroutine)
+	registerFunc(apiRouter, "/debug/ppprof/goroutine", pprofHandler.PPProfGoroutine)
 	registerFunc(apiRouter, "/debug/pprof/threadcreate", pprofHandler.PProfThreadcreate)
 	registerFunc(apiRouter, "/debug/pprof/zip", pprofHandler.PProfZip)
 

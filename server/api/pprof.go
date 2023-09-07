@@ -16,6 +16,7 @@ package api
 
 import (
 	"archive/zip"
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -26,6 +27,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/google/pprof/profile"
 	"github.com/pingcap/log"
 	"github.com/tikv/pd/pkg/versioninfo"
 	"github.com/tikv/pd/server"
@@ -199,6 +201,64 @@ func (h *pprofHandler) PProfBlock(w http.ResponseWriter, r *http.Request) {
 // @Router   /debug/pprof/goroutine [get]
 func (h *pprofHandler) PProfGoroutine(w http.ResponseWriter, r *http.Request) {
 	pp.Handler("goroutine").ServeHTTP(w, r)
+}
+
+// @Tags     debug
+// @Summary  debug goroutine of PD servers.
+// @Router   /debug/pprof/goroutine [get]
+func (h *pprofHandler) PPProfGoroutine(w http.ResponseWriter, r *http.Request) {
+	p := pprof.Lookup("goroutine")
+	data := bytes.NewBuffer(make([]byte, 0, 4096))
+	p.WriteTo(data, 0)
+	pprof.StartCPUProfile(data)
+	pp, err := profile.ParseData(data.Bytes())
+	log.Info("data---", zap.String("data", data.String()))
+	fmt.Println(err)
+	if err != nil {
+		h.rd.JSON(w, http.StatusOK, fmt.Sprintf("error: %s", err.Error()))
+		return
+	}
+	for _, s := range pp.Sample {
+		fmt.Println("********************", s.Value)
+		fmt.Println(s.Label)
+		for _, l := range s.Location {
+			fmt.Println("    ", l.ID, l.Address, l.IsFolded)
+			for _, li := range l.Line {
+				fmt.Println("        ", li.Line, li.Function.Filename, li.Function.Name, li.Function.ID, li.Function.StartLine, li.Function.SystemName)
+			}
+		}
+	}
+}
+
+// @Tags     debug
+// @Summary  debug goroutine of PD servers.
+// @Router   /debug/pprof/goroutine [get]
+func (h *pprofHandler) PPProfHeap(w http.ResponseWriter, r *http.Request) {
+	p := pprof.Lookup("heap")
+	data := bytes.NewBuffer(make([]byte, 0, 4096))
+	p.WriteTo(data, 0)
+	pprof.StartCPUProfile(data)
+	pp, err := profile.ParseData(data.Bytes())
+	log.Info("data---", zap.String("data", data.String()))
+	fmt.Println(err)
+	if err != nil {
+		h.rd.JSON(w, http.StatusOK, fmt.Sprintf("error: %s", err.Error()))
+		return
+	}
+	fmt.Println("==============", pp.SampleType)
+	for i, t := range pp.SampleType {
+		fmt.Println(i, t.Type, t.Unit)
+	}
+	for _, s := range pp.Sample {
+		fmt.Println("********************", s.Value)
+		fmt.Println(s.Label)
+		for _, l := range s.Location {
+			fmt.Println("    ", l.ID, l.Address, l.IsFolded)
+			for _, li := range l.Line {
+				fmt.Println("        ", li.Line, li.Function.Filename, li.Function.Name, li.Function.ID, li.Function.StartLine, li.Function.SystemName)
+			}
+		}
+	}
 }
 
 // @Tags     debug

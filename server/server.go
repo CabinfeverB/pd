@@ -86,6 +86,7 @@ import (
 
 const (
 	serverMetricsInterval = time.Minute
+	serverProfileInterval = time.Minute
 	// pdRootPath for all pd servers.
 	pdRootPath      = "/pd"
 	pdAPIPrefix     = "/pd/"
@@ -213,13 +214,16 @@ type Server struct {
 	// related data structures defined in the PD grpc service
 	pdProtoFactory *tsoutil.PDProtoFactory
 
+	dynamicRateLimiter *RateLimitManager
+
 	serviceRateLimiter *ratelimit.Limiter
 	serviceLabels      map[string][]apiutil.AccessPath
 	apiServiceLabelMap map[apiutil.AccessPath]string
 
 	grpcServiceRateLimiter *ratelimit.Limiter
 	grpcServiceLabels      map[string]struct{}
-	grpcServer             *grpc.Server
+	gs                     *grpc.Server
+	grpcServer             *GrpcServer
 
 	serviceAuditBackendLabels map[string]*audit.BackendLabels
 
@@ -275,6 +279,7 @@ func CreateServer(ctx context.Context, cfg *config.Config, services []string, le
 	s.serviceLabels = make(map[string][]apiutil.AccessPath)
 	s.grpcServiceLabels = make(map[string]struct{})
 	s.apiServiceLabelMap = make(map[apiutil.AccessPath]string)
+	s.dynamicRateLimiter = NewRateLimitManager()
 
 	// Adjust etcd config.
 	etcdCfg, err := s.cfg.GenEmbedEtcdConfig()
@@ -305,7 +310,8 @@ func CreateServer(ctx context.Context, cfg *config.Config, services []string, le
 		diagnosticspb.RegisterDiagnosticsServer(gs, s)
 		// Register the micro services GRPC service.
 		s.registry.InstallAllGRPCServices(s, gs)
-		s.grpcServer = gs
+		s.gs = gs
+		s.grpcServer = grpcServer
 	}
 	s.etcdCfg = etcdCfg
 	s.lg = cfg.Logger
@@ -374,14 +380,30 @@ func (s *Server) startEtcd(ctx context.Context) error {
 	})
 	s.member = member.NewMember(etcd, s.electionClient, etcdServerID)
 	s.initGRPCServiceLabels()
+	s.initLimitedGRPCServiceLabels()
+	keys := make([]string, 0, len(s.dynamicRateLimiter.recorders))
+	for k := range s.dynamicRateLimiter.recorders {
+		keys = append(keys, k)
+		log.Info("initLimitedGRPCServiceLabels", zap.String("name", k))
+	}
 	return nil
 }
 
 func (s *Server) initGRPCServiceLabels() {
-	for _, serviceInfo := range s.grpcServer.GetServiceInfo() {
+	for _, serviceInfo := range s.gs.GetServiceInfo() {
 		for _, methodInfo := range serviceInfo.Methods {
 			s.grpcServiceLabels[methodInfo.Name] = struct{}{}
 		}
+	}
+}
+
+func (s *Server) initLimitedGRPCServiceLabels() {
+	prefix := s.grpcServer.getGRPCFunctionPrefixPath()
+	funcs := []string{
+		"StoreHeartbeat",
+	}
+	for _, name := range funcs {
+		s.dynamicRateLimiter.AddAPI(prefix + "." + name)
 	}
 }
 
@@ -609,11 +631,12 @@ func (s *Server) LoopContext() context.Context {
 
 func (s *Server) startServerLoop(ctx context.Context) {
 	s.serverLoopCtx, s.serverLoopCancel = context.WithCancel(ctx)
-	s.serverLoopWg.Add(4)
+	s.serverLoopWg.Add(5)
 	go s.leaderLoop()
 	go s.etcdLeaderLoop()
 	go s.serverMetricsLoop()
 	go s.encryptionKeyManagerLoop()
+	go s.collectProfileLoop()
 	if s.IsAPIServiceMode() {
 		s.initTSOPrimaryWatcher()
 		s.tsoPrimaryWatcher.StartWatchLoop()
@@ -653,6 +676,31 @@ func (s *Server) encryptionKeyManagerLoop() {
 	defer cancel()
 	s.encryptionKeyManager.StartBackgroundLoop(ctx)
 	log.Info("server is closed, exist encryption key manager loop")
+}
+
+func (s *Server) Allow(name string) bool {
+	return s.dynamicRateLimiter.Allow(name)
+}
+
+func (s *Server) collectProfileLoop() {
+	defer logutil.LogPanic()
+	defer s.serverLoopWg.Done()
+
+	ctx, cancel := context.WithCancel(s.serverLoopCtx)
+	defer cancel()
+	ticker := time.NewTicker(serverProfileInterval)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			if s.GetServiceMiddlewarePersistOptions().IsRateLimitEnabled() {
+				s.dynamicRateLimiter.Collect()
+			}
+		case <-ctx.Done():
+			log.Info("server is closed, exit profile loop")
+			return
+		}
+	}
 }
 
 func (s *Server) collectEtcdStateMetrics() {
@@ -1426,6 +1474,7 @@ func (s *Server) AddServiceLabel(serviceLabel string, accessPath apiutil.AccessP
 	}
 
 	s.apiServiceLabelMap[accessPath] = serviceLabel
+	s.dynamicRateLimiter.AddAPI(serviceLabel)
 }
 
 // GetAuditBackend returns audit backends
@@ -1466,6 +1515,18 @@ func (s *Server) GetGRPCRateLimiter() *ratelimit.Limiter {
 // UpdateGRPCServiceRateLimiter is used to update RateLimiter
 func (s *Server) UpdateGRPCServiceRateLimiter(serviceLabel string, opts ...ratelimit.Option) ratelimit.UpdateStatus {
 	return s.grpcServiceRateLimiter.Update(serviceLabel, opts...)
+}
+
+func (s *Server) IsExceedMemoryLimitByServiceLabel(serviceLabel string) bool {
+	return false
+}
+
+func (s *Server) IsExceedMemoryLimitByGRPCName(name string) bool {
+	return false
+}
+
+func (s *Server) isExceedMemoryLimit(name string) bool {
+	return false
 }
 
 // GetClusterStatus gets cluster status.

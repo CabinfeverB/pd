@@ -2551,6 +2551,10 @@ func (c *RaftCluster) loadMinResolvedTS() {
 func (c *RaftCluster) GetMinResolvedTS() uint64 {
 	c.RLock()
 	defer c.RUnlock()
+	failpoint.Inject("SlowGetMeta", func(val failpoint.Value) {
+		d := val.(int)
+		time.Sleep(time.Duration(d) * time.Second)
+	})
 	if !c.isInitialized() {
 		return math.MaxUint64
 	}

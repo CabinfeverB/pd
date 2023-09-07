@@ -79,6 +79,16 @@ type GrpcServer struct {
 	concurrentTSOProxyStreamings atomic.Int32
 }
 
+func (s *GrpcServer) getGRPCFunctionPrefixPath() string {
+	counter, _, _, _ := runtime.Caller(0)
+	name := runtime.FuncForPC(counter).Name()
+	strs := strings.Split(name, ".")
+	if len(strs) > 1 {
+		return strings.Join(strs[:len(strs)-1], ".")
+	}
+	return name
+}
+
 type request interface {
 	GetHeader() *pdpb.RequestHeader
 }
@@ -930,6 +940,11 @@ func (s *GrpcServer) StoreHeartbeat(ctx context.Context, request *pdpb.StoreHear
 				Header: s.wrapErrorToHeader(pdpb.ErrorType_UNKNOWN, errs.ErrRateLimitExceeded.FastGenByArgs().Error()),
 			}, nil
 		}
+		if !s.Server.Allow(currentFunctionFullPath()) {
+			return &pdpb.StoreHeartbeatResponse{
+				Header: s.wrapErrorToHeader(pdpb.ErrorType_UNKNOWN, errs.ErrRateLimitExceeded.FastGenByArgs().Error()),
+			}, nil
+		}
 	}
 	fn := func(ctx context.Context, client *grpc.ClientConn) (interface{}, error) {
 		return pdpb.NewPDClient(client).StoreHeartbeat(ctx, request)
@@ -939,6 +954,11 @@ func (s *GrpcServer) StoreHeartbeat(ctx context.Context, request *pdpb.StoreHear
 	} else if rsp != nil {
 		return rsp.(*pdpb.StoreHeartbeatResponse), err
 	}
+
+	failpoint.Inject("SlowStoreHeartbeat", func(val failpoint.Value) {
+		d := val.(int)
+		time.Sleep(time.Duration(d) * time.Second)
+	})
 
 	if request.GetStats() == nil {
 		return nil, errors.Errorf("invalid store heartbeat command, but %v", request)
@@ -2609,4 +2629,9 @@ func currentFunction() string {
 	counter, _, _, _ := runtime.Caller(1)
 	s := strings.Split(runtime.FuncForPC(counter).Name(), ".")
 	return s[len(s)-1]
+}
+
+func currentFunctionFullPath() string {
+	counter, _, _, _ := runtime.Caller(1)
+	return runtime.FuncForPC(counter).Name()
 }
