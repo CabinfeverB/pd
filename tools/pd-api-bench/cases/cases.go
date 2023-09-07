@@ -22,6 +22,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/pingcap/errors"
+	"github.com/pingcap/kvproto/pkg/pdpb"
 	pd "github.com/tikv/pd/client"
 	"github.com/tikv/pd/pkg/statistics"
 	"github.com/tikv/pd/pkg/utils/apiutil"
@@ -31,6 +33,7 @@ import (
 var (
 	PDAddress string
 	Debug     bool
+	ClusterID uint64
 )
 
 var (
@@ -40,6 +43,7 @@ var (
 )
 
 func InitCluster(ctx context.Context, cli pd.Client, httpClit *http.Client) error {
+	ClusterID = cli.GetClusterID(ctx)
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet,
 		PDAddress+"/pd/api/v1/stats/region?start_key=&end_key=&count", nil)
 	resp, err := httpClit.Do(req)
@@ -107,10 +111,11 @@ type GRPCCase interface {
 }
 
 var GRPCCaseMap = map[string]GRPCCase{
-	"GetRegion":   newGetRegion(),
-	"GetStore":    newGetStore(),
-	"GetStores":   newGetStores(),
-	"ScanRegions": newScanRegions(),
+	"StoreHeartbeat": newStoreHeartbeat(),
+	"GetRegion":      newGetRegion(),
+	"GetStore":       newGetStore(),
+	"GetStores":      newGetStores(),
+	"ScanRegions":    newScanRegions(),
 }
 
 type HTTPCase interface {
@@ -242,6 +247,44 @@ func (c *getRegion) Unary(ctx context.Context, cli pd.Client) error {
 	_, err := cli.GetRegion(ctx, generateKeyForSimulator(id, 56))
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+type storeHeartbeat struct {
+	*baseCase
+}
+
+func newStoreHeartbeat() *storeHeartbeat {
+	return &storeHeartbeat{
+		baseCase: &baseCase{
+			name:  "StoreHeartbeat",
+			qps:   10,
+			burst: 1,
+		},
+	}
+}
+
+func (c *storeHeartbeat) Unary(ctx context.Context, cli pd.Client) error {
+	sd := cli.GetServiceDiscovery()
+	conn := sd.GetServingEndpointClientConn()
+	client := pdpb.NewPDClient(conn)
+	req := &pdpb.StoreHeartbeatRequest{
+		Header: &pdpb.RequestHeader{
+			ClusterId: ClusterID,
+		},
+		Stats: &pdpb.StoreStats{
+			StoreId: 1,
+		},
+	}
+	resp, err := client.StoreHeartbeat(ctx, req)
+	if err != nil {
+		return err
+	}
+	if resp != nil {
+		if resp.Header.Error != nil {
+			return errors.Errorf(resp.Header.Error.Message)
+		}
 	}
 	return nil
 }

@@ -947,6 +947,9 @@ func (s *GrpcServer) StoreHeartbeat(ctx context.Context, request *pdpb.StoreHear
 		return nil, errors.Errorf("invalid store heartbeat command, but %v", request)
 	}
 	done, err2 := s.limiter.Allow()
+	if err2 != nil {
+		return nil, errs.ErrRateLimitExceeded.FastGenByArgs()
+	}
 	failpoint.Inject("SlowStoreHeartbeat", func(val failpoint.Value) {
 		d := val.(int)
 		de := time.Duration(time.Since(s.t) / 120.0)
@@ -998,10 +1001,7 @@ func (s *GrpcServer) StoreHeartbeat(ctx context.Context, request *pdpb.StoreHear
 	resp.ReplicationStatus = rc.GetReplicationMode().GetReplicationStatus()
 	resp.ClusterVersion = rc.GetClusterVersion()
 	rc.GetUnsafeRecoveryController().HandleStoreHeartbeat(request, resp)
-
-	if err2 == nil {
-		done(ratelimit.DoneInfo{})
-	}
+	done(ratelimit.DoneInfo{})
 	return resp, nil
 }
 

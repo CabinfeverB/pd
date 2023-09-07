@@ -25,6 +25,7 @@ import (
 	"os/signal"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -47,6 +48,8 @@ var (
 
 	qps   = flag.Int64("qps", 1000, "qps")
 	burst = flag.Int64("burst", 1, "burst")
+
+	wait = flag.Bool("wait", true, "wait for a round")
 
 	// http params
 	httpParams = flag.String("params", "", "http params")
@@ -200,9 +203,18 @@ func handleGRPCCase(ctx context.Context, gcase cases.GRPCCase, clients []pd.Clie
 				select {
 				case <-ticker.C:
 					for i := int64(0); i < burst; i++ {
-						err := gcase.Unary(ctx, cli)
-						if err != nil {
-							log.Println(err)
+						if *wait {
+							err := gcase.Unary(ctx, cli)
+							if err != nil {
+								log.Println(err)
+							}
+						} else {
+							go func() {
+								err := gcase.Unary(ctx, cli)
+								if err != nil {
+									log.Println(err)
+								}
+							}()
 						}
 					}
 				case <-ctx.Done():
@@ -215,6 +227,9 @@ func handleGRPCCase(ctx context.Context, gcase cases.GRPCCase, clients []pd.Clie
 }
 
 func handleHTTPCase(ctx context.Context, hcase cases.HTTPCase, httpClis []*http.Client) {
+	startCnt := 0
+	endCnt := 0
+	var mu sync.Mutex
 	qps := hcase.GetQPS()
 	burst := hcase.GetBurst()
 	tt := time.Duration(base/qps*burst*int64(*client)) * time.Microsecond
@@ -230,9 +245,36 @@ func handleHTTPCase(ctx context.Context, hcase cases.HTTPCase, httpClis []*http.
 				select {
 				case <-ticker.C:
 					for i := int64(0); i < burst; i++ {
-						err := hcase.Do(ctx, hCli)
-						if err != nil {
-							log.Println(err)
+						mu.Lock()
+						startCnt++
+						if startCnt%1000 == 0 {
+							log.Printf("case http %s has done query %d", hcase.Name(), startCnt)
+						}
+						mu.Unlock()
+						if *wait {
+							err := hcase.Do(ctx, hCli)
+							if err != nil {
+								log.Println(err)
+							}
+							mu.Lock()
+							endCnt++
+							if endCnt%1000 == 0 {
+								log.Printf("case http %s has finished query %d", hcase.Name(), endCnt)
+							}
+							mu.Unlock()
+						} else {
+							go func() {
+								err := hcase.Do(ctx, hCli)
+								if err != nil {
+									log.Println(err)
+								}
+								mu.Lock()
+								endCnt++
+								if endCnt%1000 == 0 {
+									log.Printf("case http %s has finished query %d", hcase.Name(), endCnt)
+								}
+								mu.Unlock()
+							}()
 						}
 					}
 				case <-ctx.Done():
@@ -252,7 +294,7 @@ func exit(code int) {
 func newHttpClient() *http.Client {
 	// defaultTimeout for non-context requests.
 	const defaultTimeout = 30 * time.Second
-	cli := &http.Client{Timeout: defaultTimeout}
+	cli := &http.Client{Timeout: defaultTimeout, Transport: http.DefaultTransport.(*http.Transport).Clone()}
 	tlsConf := loadTLSConfig()
 	if tlsConf != nil {
 		transport := http.DefaultTransport.(*http.Transport).Clone()
