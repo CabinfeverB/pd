@@ -27,6 +27,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/go-kratos/aegis/ratelimit"
 	"github.com/pingcap/errors"
 	"github.com/pingcap/failpoint"
 	"github.com/pingcap/kvproto/pkg/metapb"
@@ -77,6 +78,7 @@ var (
 type GrpcServer struct {
 	*Server
 	concurrentTSOProxyStreamings atomic.Int32
+	limiter                      ratelimit.Limiter
 }
 
 type request interface {
@@ -943,6 +945,7 @@ func (s *GrpcServer) StoreHeartbeat(ctx context.Context, request *pdpb.StoreHear
 	if request.GetStats() == nil {
 		return nil, errors.Errorf("invalid store heartbeat command, but %v", request)
 	}
+	done, err2 := s.limiter.Allow()
 	rc := s.GetRaftCluster()
 	if rc == nil {
 		return &pdpb.StoreHeartbeatResponse{Header: s.notBootstrappedHeader()}, nil
@@ -990,6 +993,9 @@ func (s *GrpcServer) StoreHeartbeat(ctx context.Context, request *pdpb.StoreHear
 	resp.ClusterVersion = rc.GetClusterVersion()
 	rc.GetUnsafeRecoveryController().HandleStoreHeartbeat(request, resp)
 
+	if err2 == nil {
+		done(ratelimit.DoneInfo{})
+	}
 	return resp, nil
 }
 
@@ -1320,7 +1326,7 @@ func (s *GrpcServer) GetRegion(ctx context.Context, request *pdpb.GetRegionReque
 	} else if rsp != nil {
 		return rsp.(*pdpb.GetRegionResponse), nil
 	}
-
+	done, err2 := s.limiter.Allow()
 	rc := s.GetRaftCluster()
 	if rc == nil {
 		return &pdpb.GetRegionResponse{Header: s.notBootstrappedHeader()}, nil
@@ -1332,6 +1338,9 @@ func (s *GrpcServer) GetRegion(ctx context.Context, request *pdpb.GetRegionReque
 	var buckets *metapb.Buckets
 	if rc.GetStoreConfig().IsEnableRegionBucket() && request.GetNeedBuckets() {
 		buckets = region.GetBuckets()
+	}
+	if err2 == nil {
+		done(ratelimit.DoneInfo{})
 	}
 	return &pdpb.GetRegionResponse{
 		Header:       s.header(),

@@ -31,6 +31,7 @@ import (
 	"time"
 
 	"github.com/coreos/go-semver/semver"
+	"github.com/go-kratos/aegis/ratelimit/bbr"
 	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/mux"
 	"github.com/pingcap/errors"
@@ -300,7 +301,10 @@ func CreateServer(ctx context.Context, cfg *config.Config, services []string, le
 	s.registry.InstallAllRESTHandler(s, etcdCfg.UserHandlers)
 
 	etcdCfg.ServiceRegister = func(gs *grpc.Server) {
-		grpcServer := &GrpcServer{Server: s}
+		grpcServer := &GrpcServer{
+			Server:  s,
+			limiter: bbr.NewLimiter(bbr.WithCPUThreshold(0)),
+		}
 		pdpb.RegisterPDServer(gs, grpcServer)
 		keyspacepb.RegisterKeyspaceServer(gs, &KeyspaceServer{GrpcServer: grpcServer})
 		diagnosticspb.RegisterDiagnosticsServer(gs, s)
