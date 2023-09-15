@@ -236,7 +236,7 @@ func newGetRegion() *getRegion {
 	return &getRegion{
 		baseCase: &baseCase{
 			name:  "GetRegion",
-			qps:   10000,
+			qps:   100000,
 			burst: 1,
 		},
 	}
@@ -259,7 +259,7 @@ func newStoreHeartbeat() *storeHeartbeat {
 	return &storeHeartbeat{
 		baseCase: &baseCase{
 			name:  "StoreHeartbeat",
-			qps:   10,
+			qps:   7000,
 			burst: 1,
 		},
 	}

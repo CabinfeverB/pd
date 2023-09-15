@@ -48,9 +48,9 @@ require (
 	github.com/unrolled/render v1.0.1
 	github.com/urfave/negroni v0.3.0
 	go.etcd.io/etcd v0.5.0-alpha.5.0.20220915004622-85b640cee793
-	go.uber.org/goleak v1.1.12
-	go.uber.org/zap v1.24.0
-	golang.org/x/exp v0.0.0-20230108222341-4b8118a2686a
+	go.uber.org/goleak v1.2.0
+	go.uber.org/zap v1.25.0
+	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
 	golang.org/x/text v0.9.0
 	golang.org/x/time v0.1.0
 	golang.org/x/tools v0.6.0
@@ -206,3 +206,5 @@ replace google.golang.org/grpc v1.54.0 => google.golang.org/grpc v1.26.0
 // kvproto at the same time. You can run `go mod tidy` to make it replaced with go-mod style specification.
 // After the PR to kvproto is merged, remember to comment this out and run `go mod tidy`.
 // replace github.com/pingcap/kvproto => github.com/$YourPrivateRepo $YourPrivateBranch
+
+replace github.com/go-kratos/aegis => /Users/jiangyongbo/github/aegis

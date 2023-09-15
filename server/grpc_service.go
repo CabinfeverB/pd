@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/go-kratos/aegis/ratelimit"
+	"github.com/go-kratos/aegis/ratelimit/bbr"
 	"github.com/pingcap/errors"
 	"github.com/pingcap/failpoint"
 	"github.com/pingcap/kvproto/pkg/metapb"
@@ -78,8 +79,10 @@ var (
 type GrpcServer struct {
 	*Server
 	concurrentTSOProxyStreamings atomic.Int32
-	limiter                      ratelimit.Limiter
+	limiter                      *bbr.BBR
 	t                            time.Time
+	cnt                          atomic.Int64
+	storeHeartbeatLock           sync.Mutex
 }
 
 type request interface {
@@ -946,14 +949,27 @@ func (s *GrpcServer) StoreHeartbeat(ctx context.Context, request *pdpb.StoreHear
 	if request.GetStats() == nil {
 		return nil, errors.Errorf("invalid store heartbeat command, but %v", request)
 	}
+	s.cnt.Add(1)
 	done, err2 := s.limiter.Allow()
 	if err2 != nil {
+		if s.cnt.Load()%10000 == 0 {
+			log.Info("Stat err", zap.Any("Stat", s.limiter.Stat()))
+		}
 		return nil, errs.ErrRateLimitExceeded.FastGenByArgs()
+	} else {
+		if s.cnt.Load()%10000 == 0 {
+			log.Info("Stat success", zap.Any("Stat", s.limiter.Stat()))
+		}
 	}
 	failpoint.Inject("SlowStoreHeartbeat", func(val failpoint.Value) {
+		s.storeHeartbeatLock.Lock()
 		d := val.(int)
-		de := time.Duration(time.Since(s.t) / 120.0)
-		time.Sleep(time.Duration(d)*time.Second + de)
+		// de := time.Duration(time.Since(s.t) / 1200.0)
+		// time.Sleep(time.Duration(d)*time.Second + de)
+
+		// time.Sleep(time.Duration(d)*time.Millisecond*100 + time.Duration(s.limiter.Stat().InFlight*10)*time.Microsecond)
+		time.Sleep(time.Duration(d) * time.Microsecond * 100)
+		s.storeHeartbeatLock.Unlock()
 	})
 	rc := s.GetRaftCluster()
 	if rc == nil {
@@ -1333,6 +1349,9 @@ func (s *GrpcServer) GetRegion(ctx context.Context, request *pdpb.GetRegionReque
 		return rsp.(*pdpb.GetRegionResponse), nil
 	}
 	done, err2 := s.limiter.Allow()
+	if err2 != nil {
+		return nil, errs.ErrRateLimitExceeded.FastGenByArgs()
+	}
 	rc := s.GetRaftCluster()
 	if rc == nil {
 		return &pdpb.GetRegionResponse{Header: s.notBootstrappedHeader()}, nil
@@ -1345,9 +1364,7 @@ func (s *GrpcServer) GetRegion(ctx context.Context, request *pdpb.GetRegionReque
 	if rc.GetStoreConfig().IsEnableRegionBucket() && request.GetNeedBuckets() {
 		buckets = region.GetBuckets()
 	}
-	if err2 == nil {
-		done(ratelimit.DoneInfo{})
-	}
+	done(ratelimit.DoneInfo{})
 	return &pdpb.GetRegionResponse{
 		Header:       s.header(),
 		Region:       region.GetMeta(),

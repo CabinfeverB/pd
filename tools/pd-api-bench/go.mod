@@ -3,9 +3,11 @@ module github.com/tools/pd-api-bench
 go 1.21
 
 require (
+	github.com/pingcap/errors v0.11.5-0.20211224045212-9687c2b0f87c
+	github.com/pingcap/kvproto v0.0.0-20230905082026-5336fac26974
 	github.com/tikv/pd v0.0.0-00010101000000-000000000000
 	github.com/tikv/pd/client v0.0.0-00010101000000-000000000000
-	go.uber.org/zap v1.24.0
+	go.uber.org/zap v1.25.0
 	google.golang.org/grpc v1.54.0
 )
 
@@ -68,9 +70,7 @@ require (
 	github.com/petermattis/goid v0.0.0-20211229010228-4d14c490ee36 // indirect
 	github.com/phf/go-queue v0.0.0-20170504031614-9abe38d0371d // indirect
 	github.com/pingcap/errcode v0.3.0 // indirect
-	github.com/pingcap/errors v0.11.5-0.20211224045212-9687c2b0f87c // indirect
 	github.com/pingcap/failpoint v0.0.0-20210918120811-547c13e3eb00 // indirect
-	github.com/pingcap/kvproto v0.0.0-20230905082026-5336fac26974 // indirect
 	github.com/pingcap/log v1.1.1-0.20221110025148-ca232912c9f3 // indirect
 	github.com/pingcap/sysutil v1.0.1-0.20230407040306-fb007c5aff21 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
@@ -100,7 +100,7 @@ require (
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.etcd.io/etcd v0.5.0-alpha.5.0.20220915004622-85b640cee793 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	go.uber.org/goleak v1.1.12 // indirect
+	go.uber.org/goleak v1.2.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/exp v0.0.0-20230711005742-c3f37128e5a4 // indirect

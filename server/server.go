@@ -303,7 +303,7 @@ func CreateServer(ctx context.Context, cfg *config.Config, services []string, le
 	etcdCfg.ServiceRegister = func(gs *grpc.Server) {
 		grpcServer := &GrpcServer{
 			Server:  s,
-			limiter: bbr.NewLimiter(bbr.WithCPUThreshold(0)),
+			limiter: bbr.NewLimiter(bbr.WithCPUThreshold(800)),
 			t:       time.Now(),
 		}
 		pdpb.RegisterPDServer(gs, grpcServer)
