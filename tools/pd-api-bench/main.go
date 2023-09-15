@@ -144,11 +144,52 @@ func main() {
 	}
 	gcaseStr := strings.Split(*gRPCCases, ",")
 	for _, str := range gcaseStr {
-		if len(str) == 0 {
+		caseQPS := int64(0)
+		caseBurst := int64(0)
+		cStr := ""
+
+		strs := strings.Split(str, "-")
+		fmt.Println(strs)
+		// to get case name
+		strsa := strings.Split(strs[0], "+")
+		cStr = strsa[0]
+		// to get case Burst
+		if len(strsa) > 1 {
+			caseBurst, err = strconv.ParseInt(strsa[1], 10, 64)
+			if err != nil {
+				log.Printf("parse burst failed for case %s", str)
+			}
+		}
+		// to get case qps
+		if len(strs) > 1 {
+			strsb := strings.Split(strs[1], "+")
+			caseQPS, err = strconv.ParseInt(strsb[0], 10, 64)
+			if err != nil {
+				log.Printf("parse qps failed for case %s", str)
+			}
+			// to get case Burst
+			if len(strsb) > 1 {
+				caseBurst, err = strconv.ParseInt(strsb[1], 10, 64)
+				if err != nil {
+					log.Printf("parse burst failed for case %s", str)
+				}
+			}
+		}
+		if len(cStr) == 0 {
 			continue
 		}
-		if cas, ok := cases.GRPCCaseMap[str]; ok {
+		if cas, ok := cases.GRPCCaseMap[cStr]; ok {
 			gcases = append(gcases, cas)
+			if caseBurst > 0 {
+				cas.SetBurst(caseBurst)
+			} else if *burst > 0 {
+				cas.SetBurst(*burst)
+			}
+			if caseQPS > 0 {
+				cas.SetQPS(caseQPS)
+			} else if *qps > 0 {
+				cas.SetQPS(*qps)
+			}
 		} else {
 			log.Println("no this case", str)
 		}
