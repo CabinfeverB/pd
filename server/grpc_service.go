@@ -75,14 +75,119 @@ var (
 	ErrEtcdNotStarted                   = status.Errorf(codes.Unavailable, "server is started, but etcd not started")
 )
 
+const (
+	limiterPriorityLen = 3
+	minPenaltyFactor   = 0.1
+	factor             = 0.9
+)
+
+type priorityManager struct {
+	limiters       []*bbr.BBR
+	limiterManager *limiterManager
+
+	penaltyFactor float64
+}
+
+func newPriorityManager(m *limiterManager) *priorityManager {
+	return &priorityManager{
+		limiterManager: m,
+		penaltyFactor:  1.0,
+	}
+}
+
+func (p *priorityManager) tryUpdatePenalty() {
+	p.penaltyFactor = 1.
+	for _, l := range p.limiters {
+		p.penaltyFactor *= l.GetBroadcasePenalty()
+		if p.penaltyFactor < 0.1 {
+			p.penaltyFactor = 0.1
+		}
+	}
+}
+
+func (p *priorityManager) setPenalty(penalty float64) {
+	for _, limiter := range p.limiters {
+		limiter.SetPenalty(penalty)
+	}
+}
+
+type limiterManager struct {
+	storeHeartbeatlimiter *bbr.BBR
+	getRegionlimiter      *bbr.BBR
+
+	priorityManagers []*priorityManager
+}
+
+func createLimiterManager() *limiterManager {
+	storeHeartbeatlimiter := bbr.NewLimiter(bbr.WithCPUThreshold(800), bbr.WithName("storeHeartbeat"))
+	getRegionlimiter := bbr.NewLimiter(bbr.WithCPUThreshold(800), bbr.WithName("getRegion"))
+	priorityManagers := make([]*priorityManager, limiterPriorityLen)
+	l := &limiterManager{
+		storeHeartbeatlimiter: storeHeartbeatlimiter,
+		getRegionlimiter:      getRegionlimiter,
+		priorityManagers:      priorityManagers,
+	}
+
+	for i := range priorityManagers {
+		priorityManagers[i] = newPriorityManager(l)
+	}
+	priorityManagers[0].limiters = append(priorityManagers[0].limiters, storeHeartbeatlimiter)
+	priorityManagers[1].limiters = append(priorityManagers[1].limiters, getRegionlimiter)
+
+	go l.checkPenalty()
+	go l.printStats()
+	return l
+}
+
+func (l *limiterManager) printStats() {
+	ticker := time.NewTicker(time.Second * 2)
+	defer func() {
+		ticker.Stop()
+		log.Info("printStats exit")
+	}()
+	for range ticker.C {
+		log.Info("storeHeartbeat limiter stat", zap.Any("Stat", l.storeHeartbeatlimiter.Stat()))
+		log.Info("gerRegion limiter stat", zap.Any("Stat", l.getRegionlimiter.Stat()))
+	}
+}
+
+func (l *limiterManager) checkPenalty() {
+	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
+	for range ticker.C {
+		for _, pm := range l.priorityManagers {
+			pm.tryUpdatePenalty()
+		}
+		l.updatePenalty()
+	}
+}
+
+func (l *limiterManager) updatePenalty() {
+	penaltyFactor := 1.
+	for _, pm := range l.priorityManagers {
+		pm.setPenalty(penaltyFactor)
+		penaltyFactor *= pm.penaltyFactor
+	}
+}
+
 // GrpcServer wraps Server to provide grpc service.
 type GrpcServer struct {
 	*Server
 	concurrentTSOProxyStreamings atomic.Int32
-	limiter                      *bbr.BBR
-	t                            time.Time
-	cnt                          atomic.Int64
-	storeHeartbeatLock           sync.Mutex
+
+	limiterManager *limiterManager
+
+	// for test
+	t                  time.Time
+	storeHeartbeatLock sync.Mutex
+}
+
+func createGrpcServer(s *Server) *GrpcServer {
+	return &GrpcServer{
+		Server:         s,
+		limiterManager: createLimiterManager(),
+		t:              time.Now(),
+	}
 }
 
 type request interface {
@@ -949,17 +1054,10 @@ func (s *GrpcServer) StoreHeartbeat(ctx context.Context, request *pdpb.StoreHear
 	if request.GetStats() == nil {
 		return nil, errors.Errorf("invalid store heartbeat command, but %v", request)
 	}
-	s.cnt.Add(1)
-	done, err2 := s.limiter.Allow()
+	done, err2 := s.limiterManager.storeHeartbeatlimiter.Allow()
 	if err2 != nil {
-		if s.cnt.Load()%10000 == 0 {
-			log.Info("Stat err", zap.Any("Stat", s.limiter.Stat()))
-		}
+		rateLimitCounter.WithLabelValues("StoreHeartbeat").Add(1)
 		return nil, errs.ErrRateLimitExceeded.FastGenByArgs()
-	} else {
-		if s.cnt.Load()%10000 == 0 {
-			log.Info("Stat success", zap.Any("Stat", s.limiter.Stat()))
-		}
 	}
 	failpoint.Inject("SlowStoreHeartbeat", func(val failpoint.Value) {
 		s.storeHeartbeatLock.Lock()
@@ -1348,10 +1446,17 @@ func (s *GrpcServer) GetRegion(ctx context.Context, request *pdpb.GetRegionReque
 	} else if rsp != nil {
 		return rsp.(*pdpb.GetRegionResponse), nil
 	}
-	done, err2 := s.limiter.Allow()
+	done, err2 := s.limiterManager.getRegionlimiter.Allow()
 	if err2 != nil {
+		rateLimitCounter.WithLabelValues("GetRegion").Add(1)
 		return nil, errs.ErrRateLimitExceeded.FastGenByArgs()
 	}
+	failpoint.Inject("SlowStoreHeartbeat", func(val failpoint.Value) {
+		s.storeHeartbeatLock.Lock()
+		d := val.(int)
+		time.Sleep(time.Duration(d) * time.Microsecond * 10)
+		s.storeHeartbeatLock.Unlock()
+	})
 	rc := s.GetRaftCluster()
 	if rc == nil {
 		return &pdpb.GetRegionResponse{Header: s.notBootstrappedHeader()}, nil

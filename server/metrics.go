@@ -159,6 +159,14 @@ var (
 			Name:      "maxprocs",
 			Help:      "The value of GOMAXPROCS.",
 		})
+
+	rateLimitCounter = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: "pd",
+			Subsystem: "server",
+			Name:      "rate_limit",
+			Help:      "Counter of region heartbeat.",
+		}, []string{"api"})
 )
 
 func init() {
@@ -179,4 +187,5 @@ func init() {
 	prometheus.MustRegister(serviceAuditHistogram)
 	prometheus.MustRegister(bucketReportInterval)
 	prometheus.MustRegister(serverMaxProcs)
+	prometheus.MustRegister(rateLimitCounter)
 }

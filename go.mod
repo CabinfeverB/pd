@@ -49,7 +49,7 @@ require (
 	github.com/urfave/negroni v0.3.0
 	go.etcd.io/etcd v0.5.0-alpha.5.0.20220915004622-85b640cee793
 	go.uber.org/goleak v1.2.0
-	go.uber.org/zap v1.25.0
+	go.uber.org/zap v1.26.0
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
 	golang.org/x/text v0.9.0
 	golang.org/x/time v0.1.0
@@ -75,7 +75,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.12.6 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.6 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
-	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bitly/go-simplejson v0.5.0 // indirect
 	github.com/breeswish/gin-jwt/v2 v2.6.4-jwt-patch // indirect
@@ -207,4 +206,6 @@ replace google.golang.org/grpc v1.54.0 => google.golang.org/grpc v1.26.0
 // After the PR to kvproto is merged, remember to comment this out and run `go mod tidy`.
 // replace github.com/pingcap/kvproto => github.com/$YourPrivateRepo $YourPrivateBranch
 
-replace github.com/go-kratos/aegis => github.com/CabinfeverB/aegis v0.0.0-20230915011742-cfc84eb2b73c
+replace github.com/go-kratos/aegis => github.com/CabinfeverB/aegis v0.0.0-20230928030530-c7569b8a9aeb
+
+// replace github.com/go-kratos/aegis => /Users/jiangyongbo/github/aegis

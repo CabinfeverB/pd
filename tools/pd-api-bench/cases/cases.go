@@ -259,7 +259,7 @@ func newStoreHeartbeat() *storeHeartbeat {
 	return &storeHeartbeat{
 		baseCase: &baseCase{
 			name:  "StoreHeartbeat",
-			qps:   100,
+			qps:   10000,
 			burst: 1,
 		},
 	}
