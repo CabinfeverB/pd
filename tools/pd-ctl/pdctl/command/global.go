@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/pingcap/errors"
@@ -38,11 +39,22 @@ var (
 )
 
 // InitHTTPSClient creates https client with ca file
-func InitHTTPSClient(caPath, certPath, keyPath string) error {
+func InitHTTPSClient(caPath, certPath, keyPath, ciphers string) error {
 	tlsInfo := transport.TLSInfo{
 		CertFile:      certPath,
 		KeyFile:       keyPath,
 		TrustedCAFile: caPath,
+	}
+	if len(ciphers) > 0 {
+		tlsInfo.CipherSuites = make([]uint16, 0)
+		cs := strings.Split(ciphers, ",")
+		for _, c := range cs {
+			cint, err := strconv.ParseUint(c, 10, 16)
+			if err != nil {
+				return err
+			}
+			tlsInfo.CipherSuites = append(tlsInfo.CipherSuites, uint16(cint))
+		}
 	}
 	tlsConfig, err := tlsInfo.ClientConfig()
 	if err != nil {

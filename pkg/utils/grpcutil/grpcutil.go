@@ -69,11 +69,9 @@ func (s TLSConfig) ToTLSConfig() (*tls.Config, error) {
 		}
 		return &tls.Config{
 			Certificates: certificates,
+			MinVersion:   tls.VersionTLS13,
 			RootCAs:      certPool,
 			NextProtos:   []string{"h2", "http/1.1"}, // specify `h2` to let Go use HTTP/2.
-			CipherSuites: []uint16{
-				tls.TLS_CHACHA20_POLY1305_SHA256,
-			},
 		}, nil
 	}
 
