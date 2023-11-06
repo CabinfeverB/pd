@@ -24,7 +24,7 @@ function generate_certs() {
     openssl req -new -key pd-server-key.pem -out pd-server.csr  -subj "/CN=pd-server"
 
     # Add IP address as a SAN
-    echo "subjectAltName = IP:127.0.0.1" > extfile.cnf
+    echo "subjectAltName = IP:10.2.8.101" > extfile.cnf
     openssl x509 -req -in pd-server.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out pd-server.pem -days 1 -extfile extfile.cnf
 
     # Clean up the temporary extension file
