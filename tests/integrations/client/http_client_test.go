@@ -49,14 +49,22 @@ func (suite *httpClientTestSuite) SetupSuite() {
 	re := suite.Require()
 	var err error
 	suite.ctx, suite.cancelFunc = context.WithCancel(context.Background())
-	suite.cluster, err = tests.NewTestCluster(suite.ctx, 1)
+	suite.cluster, err = tests.NewTestCluster(suite.ctx, 2)
 	re.NoError(err)
 	err = suite.cluster.RunInitialServers()
 	re.NoError(err)
 	leader := suite.cluster.WaitLeader()
 	re.NotEmpty(leader)
-	err = suite.cluster.GetLeaderServer().BootstrapCluster()
+	leaderServer := suite.cluster.GetLeaderServer()
+	err = leaderServer.BootstrapCluster()
 	re.NoError(err)
+	for _, region := range []*core.RegionInfo{
+		core.NewTestRegionInfo(10, 1, []byte("a1"), []byte("a2")),
+		core.NewTestRegionInfo(11, 1, []byte("a2"), []byte("a3")),
+	} {
+		err := leaderServer.GetRaftCluster().HandleRegionHeartbeat(region)
+		re.NoError(err)
+	}
 	var (
 		testServers = suite.cluster.GetServers()
 		endpoints   = make([]string, 0, len(testServers))
@@ -64,13 +72,78 @@ func (suite *httpClientTestSuite) SetupSuite() {
 	for _, s := range testServers {
 		endpoints = append(endpoints, s.GetConfig().AdvertiseClientUrls)
 	}
-	suite.client = pd.NewClient(endpoints)
+	suite.client = pd.NewClient("pd-http-client-it", endpoints)
 }
 
 func (suite *httpClientTestSuite) TearDownSuite() {
 	suite.cancelFunc()
 	suite.client.Close()
 	suite.cluster.Destroy()
+}
+
+func (suite *httpClientTestSuite) TestMeta() {
+	re := suite.Require()
+	replicateConfig, err := suite.client.GetReplicateConfig(suite.ctx)
+	re.NoError(err)
+	re.Equal(3.0, replicateConfig["max-replicas"])
+	region, err := suite.client.GetRegionByID(suite.ctx, 10)
+	re.NoError(err)
+	re.Equal(int64(10), region.ID)
+	re.Equal(core.HexRegionKeyStr([]byte("a1")), region.StartKey)
+	re.Equal(core.HexRegionKeyStr([]byte("a2")), region.EndKey)
+	region, err = suite.client.GetRegionByKey(suite.ctx, []byte("a2"))
+	re.NoError(err)
+	re.Equal(int64(11), region.ID)
+	re.Equal(core.HexRegionKeyStr([]byte("a2")), region.StartKey)
+	re.Equal(core.HexRegionKeyStr([]byte("a3")), region.EndKey)
+	regions, err := suite.client.GetRegions(suite.ctx)
+	re.NoError(err)
+	re.Equal(int64(2), regions.Count)
+	re.Len(regions.Regions, 2)
+	regions, err = suite.client.GetRegionsByKeyRange(suite.ctx, pd.NewKeyRange([]byte("a1"), []byte("a3")), -1)
+	re.NoError(err)
+	re.Equal(int64(2), regions.Count)
+	re.Len(regions.Regions, 2)
+	regions, err = suite.client.GetRegionsByStoreID(suite.ctx, 1)
+	re.NoError(err)
+	re.Equal(int64(2), regions.Count)
+	re.Len(regions.Regions, 2)
+	state, err := suite.client.GetRegionsReplicatedStateByKeyRange(suite.ctx, pd.NewKeyRange([]byte("a1"), []byte("a3")))
+	re.NoError(err)
+	re.Equal("INPROGRESS", state)
+	regionStats, err := suite.client.GetRegionStatusByKeyRange(suite.ctx, pd.NewKeyRange([]byte("a1"), []byte("a3")), false)
+	re.NoError(err)
+	re.Greater(regionStats.Count, 0)
+	re.NotEmpty(regionStats.StoreLeaderCount)
+	regionStats, err = suite.client.GetRegionStatusByKeyRange(suite.ctx, pd.NewKeyRange([]byte("a1"), []byte("a3")), true)
+	re.NoError(err)
+	re.Greater(regionStats.Count, 0)
+	re.Empty(regionStats.StoreLeaderCount)
+	hotReadRegions, err := suite.client.GetHotReadRegions(suite.ctx)
+	re.NoError(err)
+	re.Len(hotReadRegions.AsPeer, 1)
+	re.Len(hotReadRegions.AsLeader, 1)
+	hotWriteRegions, err := suite.client.GetHotWriteRegions(suite.ctx)
+	re.NoError(err)
+	re.Len(hotWriteRegions.AsPeer, 1)
+	re.Len(hotWriteRegions.AsLeader, 1)
+	historyHorRegions, err := suite.client.GetHistoryHotRegions(suite.ctx, &pd.HistoryHotRegionsRequest{
+		StartTime: 0,
+		EndTime:   time.Now().AddDate(0, 0, 1).UnixNano() / int64(time.Millisecond),
+	})
+	re.NoError(err)
+	re.Empty(historyHorRegions.HistoryHotRegion)
+	store, err := suite.client.GetStores(suite.ctx)
+	re.NoError(err)
+	re.Equal(1, store.Count)
+	re.Len(store.Stores, 1)
+	storeID := uint64(store.Stores[0].Store.ID) // TODO: why type is different?
+	store2, err := suite.client.GetStore(suite.ctx, storeID)
+	re.NoError(err)
+	re.EqualValues(storeID, store2.Store.ID)
+	version, err := suite.client.GetClusterVersion(suite.ctx)
+	re.NoError(err)
+	re.Equal("0.0.0", version)
 }
 
 func (suite *httpClientTestSuite) TestGetMinResolvedTSByStoresIDs() {
@@ -109,24 +182,28 @@ func (suite *httpClientTestSuite) TestRule() {
 	bundles, err := suite.client.GetAllPlacementRuleBundles(suite.ctx)
 	re.NoError(err)
 	re.Len(bundles, 1)
-	re.Equal(bundles[0].ID, placement.DefaultGroupID)
+	re.Equal(placement.DefaultGroupID, bundles[0].ID)
 	bundle, err := suite.client.GetPlacementRuleBundleByGroup(suite.ctx, placement.DefaultGroupID)
 	re.NoError(err)
 	re.Equal(bundles[0], bundle)
 	// Check if we have the default rule.
 	suite.checkRule(re, &pd.Rule{
-		GroupID: placement.DefaultGroupID,
-		ID:      placement.DefaultRuleID,
-		Role:    pd.Voter,
-		Count:   3,
+		GroupID:  placement.DefaultGroupID,
+		ID:       placement.DefaultRuleID,
+		Role:     pd.Voter,
+		Count:    3,
+		StartKey: []byte{},
+		EndKey:   []byte{},
 	}, 1, true)
 	// Should be the same as the rules in the bundle.
 	suite.checkRule(re, bundle.Rules[0], 1, true)
 	testRule := &pd.Rule{
-		GroupID: placement.DefaultGroupID,
-		ID:      "test",
-		Role:    pd.Voter,
-		Count:   3,
+		GroupID:  placement.DefaultGroupID,
+		ID:       "test",
+		Role:     pd.Voter,
+		Count:    3,
+		StartKey: []byte{},
+		EndKey:   []byte{},
 	}
 	err = suite.client.SetPlacementRule(suite.ctx, testRule)
 	re.NoError(err)
@@ -178,12 +255,35 @@ func (suite *httpClientTestSuite) TestRule() {
 	ruleGroup, err = suite.client.GetPlacementRuleGroupByID(suite.ctx, testRuleGroup.ID)
 	re.ErrorContains(err, http.StatusText(http.StatusNotFound))
 	re.Empty(ruleGroup)
+	// Test the start key and end key.
+	testRule = &pd.Rule{
+		GroupID:  placement.DefaultGroupID,
+		ID:       "test",
+		Role:     pd.Voter,
+		Count:    5,
+		StartKey: []byte("a1"),
+		EndKey:   []byte(""),
+	}
+	err = suite.client.SetPlacementRule(suite.ctx, testRule)
+	re.NoError(err)
+	suite.checkRule(re, testRule, 1, true)
 }
 
 func (suite *httpClientTestSuite) checkRule(
 	re *require.Assertions,
 	rule *pd.Rule, totalRuleCount int, exist bool,
 ) {
+	if exist {
+		got, err := suite.client.GetPlacementRule(suite.ctx, rule.GroupID, rule.ID)
+		re.NoError(err)
+		// skip comparison of the generated field
+		got.StartKeyHex = rule.StartKeyHex
+		got.EndKeyHex = rule.EndKeyHex
+		re.Equal(rule, got)
+	} else {
+		_, err := suite.client.GetPlacementRule(suite.ctx, rule.GroupID, rule.ID)
+		re.ErrorContains(err, http.StatusText(http.StatusNotFound))
+	}
 	// Check through the `GetPlacementRulesByGroup` API.
 	rules, err := suite.client.GetPlacementRulesByGroup(suite.ctx, rule.GroupID)
 	re.NoError(err)
@@ -207,6 +307,8 @@ func checkRuleFunc(
 		re.Equal(rule.ID, r.ID)
 		re.Equal(rule.Role, r.Role)
 		re.Equal(rule.Count, r.Count)
+		re.Equal(rule.StartKey, r.StartKey)
+		re.Equal(rule.EndKey, r.EndKey)
 		return
 	}
 	if exist {
@@ -271,22 +373,15 @@ func (suite *httpClientTestSuite) TestRegionLabel() {
 func (suite *httpClientTestSuite) TestAccelerateSchedule() {
 	re := suite.Require()
 	raftCluster := suite.cluster.GetLeaderServer().GetRaftCluster()
-	for _, region := range []*core.RegionInfo{
-		core.NewTestRegionInfo(10, 1, []byte("a1"), []byte("a2")),
-		core.NewTestRegionInfo(11, 1, []byte("a2"), []byte("a3")),
-	} {
-		err := raftCluster.HandleRegionHeartbeat(region)
-		re.NoError(err)
-	}
 	suspectRegions := raftCluster.GetSuspectRegions()
-	re.Len(suspectRegions, 0)
+	re.Empty(suspectRegions)
 	err := suite.client.AccelerateSchedule(suite.ctx, pd.NewKeyRange([]byte("a1"), []byte("a2")))
 	re.NoError(err)
 	suspectRegions = raftCluster.GetSuspectRegions()
 	re.Len(suspectRegions, 1)
 	raftCluster.ClearSuspectRegions()
 	suspectRegions = raftCluster.GetSuspectRegions()
-	re.Len(suspectRegions, 0)
+	re.Empty(suspectRegions)
 	err = suite.client.AccelerateScheduleInBatch(suite.ctx, []*pd.KeyRange{
 		pd.NewKeyRange([]byte("a1"), []byte("a2")),
 		pd.NewKeyRange([]byte("a2"), []byte("a3")),
@@ -294,4 +389,92 @@ func (suite *httpClientTestSuite) TestAccelerateSchedule() {
 	re.NoError(err)
 	suspectRegions = raftCluster.GetSuspectRegions()
 	re.Len(suspectRegions, 2)
+}
+
+func (suite *httpClientTestSuite) TestScheduleConfig() {
+	re := suite.Require()
+	config, err := suite.client.GetScheduleConfig(suite.ctx)
+	re.NoError(err)
+	re.Equal(float64(4), config["leader-schedule-limit"])
+	re.Equal(float64(2048), config["region-schedule-limit"])
+	config["leader-schedule-limit"] = float64(8)
+	err = suite.client.SetScheduleConfig(suite.ctx, config)
+	re.NoError(err)
+	config, err = suite.client.GetScheduleConfig(suite.ctx)
+	re.NoError(err)
+	re.Equal(float64(8), config["leader-schedule-limit"])
+	re.Equal(float64(2048), config["region-schedule-limit"])
+}
+
+func (suite *httpClientTestSuite) TestSchedulers() {
+	re := suite.Require()
+	schedulers, err := suite.client.GetSchedulers(suite.ctx)
+	re.NoError(err)
+	re.Empty(schedulers)
+
+	err = suite.client.CreateScheduler(suite.ctx, "evict-leader-scheduler", 1)
+	re.NoError(err)
+	schedulers, err = suite.client.GetSchedulers(suite.ctx)
+	re.NoError(err)
+	re.Len(schedulers, 1)
+	err = suite.client.SetSchedulerDelay(suite.ctx, "evict-leader-scheduler", 100)
+	re.NoError(err)
+	err = suite.client.SetSchedulerDelay(suite.ctx, "not-exist", 100)
+	re.ErrorContains(err, "500 Internal Server Error") // TODO: should return friendly error message
+}
+
+func (suite *httpClientTestSuite) TestSetStoreLabels() {
+	re := suite.Require()
+	resp, err := suite.client.GetStores(suite.ctx)
+	re.NoError(err)
+	setStore := resp.Stores[0]
+	re.Empty(setStore.Store.Labels, nil)
+	storeLabels := map[string]string{
+		"zone": "zone1",
+	}
+	err = suite.client.SetStoreLabels(suite.ctx, 1, storeLabels)
+	re.NoError(err)
+
+	resp, err = suite.client.GetStores(suite.ctx)
+	re.NoError(err)
+	for _, store := range resp.Stores {
+		if store.Store.ID == setStore.Store.ID {
+			for _, label := range store.Store.Labels {
+				re.Equal(label.Value, storeLabels[label.Key])
+			}
+		}
+	}
+}
+
+func (suite *httpClientTestSuite) TestTransferLeader() {
+	re := suite.Require()
+	members, err := suite.client.GetMembers(suite.ctx)
+	re.NoError(err)
+	re.Len(members.Members, 2)
+
+	leader, err := suite.client.GetLeader(suite.ctx)
+	re.NoError(err)
+
+	// Transfer leader to another pd
+	for _, member := range members.Members {
+		if member.GetName() != leader.GetName() {
+			err = suite.client.TransferLeader(suite.ctx, member.GetName())
+			re.NoError(err)
+			break
+		}
+	}
+
+	newLeader := suite.cluster.WaitLeader()
+	re.NotEmpty(newLeader)
+	re.NoError(err)
+	re.NotEqual(leader.GetName(), newLeader)
+	// Force to update the members info.
+	suite.client.(interface{ UpdateMembersInfo() }).UpdateMembersInfo()
+	leader, err = suite.client.GetLeader(suite.ctx)
+	re.NoError(err)
+	re.Equal(newLeader, leader.GetName())
+	members, err = suite.client.GetMembers(suite.ctx)
+	re.NoError(err)
+	re.Len(members.Members, 2)
+	re.Equal(leader.GetName(), members.Leader.GetName())
 }

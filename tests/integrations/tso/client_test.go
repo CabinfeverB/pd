@@ -98,7 +98,7 @@ func (suite *tsoClientTestSuite) SetupSuite() {
 	suite.keyspaceIDs = make([]uint32, 0)
 
 	if suite.legacy {
-		client, err := pd.NewClientWithContext(suite.ctx, strings.Split(suite.backendEndpoints, ","), pd.SecurityOption{})
+		client, err := pd.NewClientWithContext(suite.ctx, strings.Split(suite.backendEndpoints, ","), pd.SecurityOption{}, pd.WithForwardingOption(true))
 		re.NoError(err)
 		innerClient, ok := client.(interface{ GetServiceDiscovery() pd.ServiceDiscovery })
 		re.True(ok)
@@ -186,6 +186,7 @@ func (suite *tsoClientTestSuite) TearDownSuite() {
 }
 
 func (suite *tsoClientTestSuite) TestGetTS() {
+	re := suite.Require()
 	var wg sync.WaitGroup
 	wg.Add(tsoRequestConcurrencyNumber * len(suite.clients))
 	for i := 0; i < tsoRequestConcurrencyNumber; i++ {
@@ -195,9 +196,9 @@ func (suite *tsoClientTestSuite) TestGetTS() {
 				var lastTS uint64
 				for j := 0; j < tsoRequestRound; j++ {
 					physical, logical, err := client.GetTS(suite.ctx)
-					suite.NoError(err)
+					re.NoError(err)
 					ts := tsoutil.ComposeTS(physical, logical)
-					suite.Less(lastTS, ts)
+					re.Less(lastTS, ts)
 					lastTS = ts
 				}
 			}(client)
@@ -207,6 +208,7 @@ func (suite *tsoClientTestSuite) TestGetTS() {
 }
 
 func (suite *tsoClientTestSuite) TestGetTSAsync() {
+	re := suite.Require()
 	var wg sync.WaitGroup
 	wg.Add(tsoRequestConcurrencyNumber * len(suite.clients))
 	for i := 0; i < tsoRequestConcurrencyNumber; i++ {
@@ -220,9 +222,9 @@ func (suite *tsoClientTestSuite) TestGetTSAsync() {
 				var lastTS uint64 = math.MaxUint64
 				for j := len(tsFutures) - 1; j >= 0; j-- {
 					physical, logical, err := tsFutures[j].Wait()
-					suite.NoError(err)
+					re.NoError(err)
 					ts := tsoutil.ComposeTS(physical, logical)
-					suite.Greater(lastTS, ts)
+					re.Greater(lastTS, ts)
 					lastTS = ts
 				}
 			}(client)
@@ -253,9 +255,9 @@ func (suite *tsoClientTestSuite) TestDiscoverTSOServiceWithLegacyPath() {
 	var lastTS uint64
 	for j := 0; j < tsoRequestRound; j++ {
 		physical, logical, err := client.GetTS(ctx)
-		suite.NoError(err)
+		re.NoError(err)
 		ts := tsoutil.ComposeTS(physical, logical)
-		suite.Less(lastTS, ts)
+		re.Less(lastTS, ts)
 		lastTS = ts
 	}
 }
@@ -263,7 +265,9 @@ func (suite *tsoClientTestSuite) TestDiscoverTSOServiceWithLegacyPath() {
 // TestGetMinTS tests the correctness of GetMinTS.
 func (suite *tsoClientTestSuite) TestGetMinTS() {
 	re := suite.Require()
-	suite.waitForAllKeyspaceGroupsInServing(re)
+	if !suite.legacy {
+		suite.waitForAllKeyspaceGroupsInServing(re)
+	}
 
 	var wg sync.WaitGroup
 	wg.Add(tsoRequestConcurrencyNumber * len(suite.clients))
@@ -293,6 +297,15 @@ func (suite *tsoClientTestSuite) TestGetMinTS() {
 		}
 	}
 	wg.Wait()
+
+	re.NoError(failpoint.Enable("github.com/tikv/pd/client/unreachableNetwork1", "return(true)"))
+	time.Sleep(time.Second)
+	testutil.Eventually(re, func() bool {
+		var err error
+		_, _, err = suite.clients[0].GetMinTS(suite.ctx)
+		return err == nil
+	})
+	re.NoError(failpoint.Disable("github.com/tikv/pd/client/unreachableNetwork1"))
 }
 
 // More details can be found in this issue: https://github.com/tikv/pd/issues/4884
