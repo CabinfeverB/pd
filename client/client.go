@@ -920,6 +920,7 @@ func (c *client) GetRegion(ctx context.Context, key []byte, opts ...GetRegionOpt
 	if serviceClient == nil {
 		return nil, errs.ErrClientGetProtoClient
 	}
+	log.Info("serviceClient", zap.String("addr", serviceClient.GetAddress()), zap.Bool("allow", options.allowFollowerHandle && c.option.getEnableFollowerHandle()))
 	resp, err := pdpb.NewPDClient(serviceClient.GetClientConn()).GetRegion(cctx, req)
 	if serviceClient.NeedRetry(resp.GetHeader().GetError(), err) {
 		protoClient, cctx := c.getClientAndContext(ctx)
