@@ -114,6 +114,7 @@ func (l *lease) KeepAlive(ctx context.Context) {
 	for {
 		select {
 		case t := <-timeCh:
+			log.Info("recive keepAliveWorker channal message", zap.Time("t", t), zap.Time("maxExpire", maxExpire), zap.Time("expire", l.expireTime.Load().(time.Time)))
 			if t.After(maxExpire) {
 				maxExpire = t
 				// Check again to make sure the `expireTime` still needs to be updated.
@@ -134,8 +135,9 @@ func (l *lease) KeepAlive(ctx context.Context) {
 			// We need be careful here, see more details in the comments of Timer.Reset.
 			// https://pkg.go.dev/time@master#Timer.Reset
 			timer.Reset(l.leaseTimeout)
+			log.Info("timer reset", zap.Duration("d", l.leaseTimeout), zap.Time("t", t), zap.Time("maxExpire", maxExpire), zap.Time("expire", l.expireTime.Load().(time.Time)))
 		case <-timer.C:
-			log.Info("lease timeout", zap.Time("expire", l.expireTime.Load().(time.Time)), zap.String("purpose", l.Purpose))
+			log.Info("lease timeout", zap.Time("expire", l.expireTime.Load().(time.Time)), zap.Time("maxExpire", maxExpire), zap.String("purpose", l.Purpose))
 			return
 		case <-ctx.Done():
 			return
@@ -165,6 +167,7 @@ func (l *lease) keepAliveWorker(ctx context.Context, interval time.Duration) <-c
 				if l.ID.Load() != nil {
 					leaseID = l.ID.Load().(clientv3.LeaseID)
 				}
+				log.Info("start lease keep alive round", zap.Time("start", start), zap.Duration("Timeout-duration", l.leaseTimeout))
 				res, err := l.lease.KeepAliveOnce(ctx1, leaseID)
 				if err != nil {
 					log.Warn("lease keep alive failed", zap.String("purpose", l.Purpose), zap.Time("start", start), errs.ZapError(err))
@@ -172,6 +175,7 @@ func (l *lease) keepAliveWorker(ctx context.Context, interval time.Duration) <-c
 				}
 				if res.TTL > 0 {
 					expire := start.Add(time.Duration(res.TTL) * time.Second)
+					log.Info("try to send alive TTL", zap.Int64("ttl", res.TTL), zap.Time("expire", expire), zap.Time("start", start))
 					select {
 					case ch <- expire:
 					// Here we don't use `ctx1.Done()` because we want to make sure if the keep alive success, we can update the expire time.
