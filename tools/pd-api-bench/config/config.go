@@ -35,7 +35,9 @@ type Config struct {
 	Logger   *zap.Logger
 	LogProps *log.ZapProperties
 
-	Client int64 `toml:"client" json:"client"`
+	Client                 int64 `toml:"client" json:"client"`
+	DisableTSO             bool  `toml:"disable-tso" json:"disable-tso"`
+	EnableTSOFollowerProxy bool  `toml:"tso-follower-proxy" json:"tso-follower-proxy"`
 
 	// tls
 	CaPath   string `toml:"ca-path" json:"ca-path"`
@@ -58,6 +60,8 @@ func NewConfig(flagSet *flag.FlagSet) *Config {
 	fs.StringVar(&cfg.Log.File.Filename, "log-file", "", "log file path")
 	fs.StringVar(&cfg.StatusAddr, "status", "127.0.0.1:10081", "status address")
 	fs.Int64Var(&cfg.Client, "client", 1, "client number")
+	fs.BoolVar(&cfg.DisableTSO, "disable-tso", false, "disable tso client")
+	fs.BoolVar(&cfg.EnableTSOFollowerProxy, "tso-follower-proxy", false, "enable tso follower proxy")
 	fs.StringVar(&cfg.CaPath, "cacert", "", "path of file that contains list of trusted SSL CAs")
 	fs.StringVar(&cfg.CertPath, "cert", "", "path of file that contains X509 certificate in PEM format")
 	fs.StringVar(&cfg.KeyPath, "key", "", "path of file that contains X509 key in PEM format")

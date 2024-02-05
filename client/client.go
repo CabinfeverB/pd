@@ -345,6 +345,14 @@ func NewClientWithContext(
 	return createClientWithKeyspace(ctx, nullKeyspaceID, svrAddrs, security, opts...)
 }
 
+// NewClientWithContextWitoutTSO creates a PD client with context but without TSO client. This API uses the default keyspace id 0.
+func NewClientWithContextWitoutTSO(
+	ctx context.Context, svrAddrs []string,
+	security SecurityOption, opts ...ClientOption,
+) (Client, error) {
+	return createClientWithoutTSO(ctx, nullKeyspaceID, svrAddrs, security, opts...)
+}
+
 // NewClientWithKeyspace creates a client with context and the specified keyspace id.
 // And now, it's only for test purpose.
 func NewClientWithKeyspace(
@@ -393,6 +401,53 @@ func createClientWithKeyspace(
 
 	c.pdSvcDiscovery = newPDServiceDiscovery(
 		clientCtx, clientCancel, &c.wg, c.setServiceMode,
+		nil, keyspaceID, c.svrUrls, c.tlsCfg, c.option)
+	if err := c.setup(); err != nil {
+		c.cancel()
+		if c.pdSvcDiscovery != nil {
+			c.pdSvcDiscovery.Close()
+		}
+		return nil, err
+	}
+
+	return c, nil
+}
+
+// createClientWithoutTSO creates a client with context and the specified keyspace id but without TSO.
+func createClientWithoutTSO(
+	ctx context.Context, keyspaceID uint32, svrAddrs []string,
+	security SecurityOption, opts ...ClientOption,
+) (Client, error) {
+	tlsCfg, err := tlsutil.TLSConfig{
+		CAPath:   security.CAPath,
+		CertPath: security.CertPath,
+		KeyPath:  security.KeyPath,
+
+		SSLCABytes:   security.SSLCABytes,
+		SSLCertBytes: security.SSLCertBytes,
+		SSLKEYBytes:  security.SSLKEYBytes,
+	}.ToTLSConfig()
+	if err != nil {
+		return nil, err
+	}
+	clientCtx, clientCancel := context.WithCancel(ctx)
+	c := &client{
+		updateTokenConnectionCh: make(chan struct{}, 1),
+		ctx:                     clientCtx,
+		cancel:                  clientCancel,
+		keyspaceID:              keyspaceID,
+		svrUrls:                 svrAddrs,
+		tlsCfg:                  tlsCfg,
+		option:                  newOption(),
+	}
+
+	// Inject the client options.
+	for _, opt := range opts {
+		opt(c)
+	}
+
+	c.pdSvcDiscovery = newPDServiceDiscovery(
+		clientCtx, clientCancel, &c.wg, c.setServiceModeWithoutTsoClient,
 		nil, keyspaceID, c.svrUrls, c.tlsCfg, c.option)
 	if err := c.setup(); err != nil {
 		c.cancel()
@@ -648,6 +703,30 @@ func (c *client) setServiceMode(newMode pdpb.ServiceMode) {
 	if oldTSOSvcDiscovery != nil {
 		// We are switching from API service mode to PD service mode, so delete the old tso microservice discovery.
 		oldTSOSvcDiscovery.Close()
+	}
+	oldMode := c.serviceMode
+	c.serviceMode = newMode
+	log.Info("[pd] service mode changed",
+		zap.String("old-mode", oldMode.String()),
+		zap.String("new-mode", newMode.String()))
+}
+
+func (c *client) setServiceModeWithoutTsoClient(newMode pdpb.ServiceMode) {
+	c.Lock()
+	defer c.Unlock()
+
+	if newMode == c.serviceMode {
+		return
+	}
+	log.Info("[pd] changing service mode",
+		zap.String("old-mode", c.serviceMode.String()),
+		zap.String("new-mode", newMode.String()))
+	switch newMode {
+	case pdpb.ServiceMode_PD_SVC_MODE:
+	case pdpb.ServiceMode_API_SVC_MODE:
+	case pdpb.ServiceMode_UNKNOWN_SVC_MODE:
+		log.Warn("[pd] intend to switch to unknown service mode, just return")
+		return
 	}
 	oldMode := c.serviceMode
 	c.serviceMode = newMode

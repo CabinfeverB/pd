@@ -119,6 +119,9 @@ func main() {
 	for i := int64(0); i < cfg.Client; i++ {
 		pdClis[i] = newPDClient(ctx, cfg)
 		pdClis[i].UpdateOption(pd.EnableFollowerHandle, true)
+		if cfg.EnableTSOFollowerProxy {
+			pdClis[i].UpdateOption(pd.EnableTSOFollowerProxy, true)
+		}
 	}
 	etcdClis := make([]*clientv3.Client, cfg.Client)
 	for i := int64(0); i < cfg.Client; i++ {
@@ -378,17 +381,33 @@ func newEtcdClient(cfg *config.Config) *clientv3.Client {
 // newPDClient returns a pd client.
 func newPDClient(ctx context.Context, cfg *config.Config) pd.Client {
 	addrs := []string{cfg.PDAddr}
-	pdCli, err := pd.NewClientWithContext(ctx, addrs, pd.SecurityOption{
-		CAPath:   cfg.CaPath,
-		CertPath: cfg.CertPath,
-		KeyPath:  cfg.KeyPath,
-	},
-		pd.WithGRPCDialOptions(
-			grpc.WithKeepaliveParams(keepalive.ClientParameters{
-				Time:    keepaliveTime,
-				Timeout: keepaliveTimeout,
-			}),
-		))
+	var pdCli pd.Client
+	var err error
+	if cfg.DisableTSO {
+		pdCli, err = pd.NewClientWithContextWitoutTSO(ctx, addrs, pd.SecurityOption{
+			CAPath:   cfg.CaPath,
+			CertPath: cfg.CertPath,
+			KeyPath:  cfg.KeyPath,
+		},
+			pd.WithGRPCDialOptions(
+				grpc.WithKeepaliveParams(keepalive.ClientParameters{
+					Time:    keepaliveTime,
+					Timeout: keepaliveTimeout,
+				}),
+			))
+	} else {
+		pdCli, err = pd.NewClientWithContext(ctx, addrs, pd.SecurityOption{
+			CAPath:   cfg.CaPath,
+			CertPath: cfg.CertPath,
+			KeyPath:  cfg.KeyPath,
+		},
+			pd.WithGRPCDialOptions(
+				grpc.WithKeepaliveParams(keepalive.ClientParameters{
+					Time:    keepaliveTime,
+					Timeout: keepaliveTimeout,
+				}),
+			))
+	}
 	if err != nil {
 		log.Fatal("fail to create pd client", zap.Error(err))
 	}

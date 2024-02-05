@@ -282,26 +282,26 @@ func (c *gRPCController) run() {
 	tt := time.Duration(base/qps*burst*cliNum) * time.Microsecond
 	log.Info("begin to run gRPC case", zap.String("case", c.Name()), zap.Int64("qps", qps), zap.Int64("burst", burst), zap.Duration("interval", tt))
 	for _, cli := range c.clients {
-		c.wg.Add(1)
-		go func(cli pd.Client) {
-			defer c.wg.Done()
-			var ticker = time.NewTicker(tt)
-			defer ticker.Stop()
-			for {
-				select {
-				case <-ticker.C:
-					for i := int64(0); i < burst; i++ {
+		for i := int64(0); i < burst; i++ {
+			c.wg.Add(1)
+			go func(cli pd.Client) {
+				defer c.wg.Done()
+				var ticker = time.NewTicker(tt)
+				defer ticker.Stop()
+				for {
+					select {
+					case <-ticker.C:
 						err := c.Unary(c.ctx, cli)
 						if err != nil {
 							log.Error("meet erorr when doing gRPC request", zap.String("case", c.Name()), zap.Error(err))
 						}
+					case <-c.ctx.Done():
+						log.Info("Got signal to exit running gRPC case")
+						return
 					}
-				case <-c.ctx.Done():
-					log.Info("Got signal to exit running gRPC case")
-					return
 				}
-			}
-		}(cli)
+			}(cli)
+		}
 	}
 }
 
